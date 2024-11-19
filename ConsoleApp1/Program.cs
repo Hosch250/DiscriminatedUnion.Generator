@@ -26,7 +26,7 @@ return 0;
 namespace ConsoleApp1
 {
     [DiscriminatedUnion]
-    abstract partial record Shape
+    public abstract partial record Shape
     {
         internal partial record Circle(float Radius);
         internal partial record EquilateralTriangle(double SideLength);

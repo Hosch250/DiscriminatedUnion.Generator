@@ -12,7 +12,7 @@ public class InvalidAccessibility : DiagnosticAnalyzer
         "Invalid Accessibility",
         "A DU member is neither marked as public or internal",
         "Discriminated Union",
-        DiagnosticSeverity.Error,
+        DiagnosticSeverity.Warning,
         true);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
