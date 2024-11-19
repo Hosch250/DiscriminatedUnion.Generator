@@ -1,1 +1,2 @@
-# ConsoleApp1
+# DiscriminatedUnion.Generator
+tbd...

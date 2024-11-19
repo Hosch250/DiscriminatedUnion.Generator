@@ -1,4 +1,5 @@
 ﻿using ConsoleApp1;
+using static ConsoleApp1.Result;
 using DiscriminatedUnion.Generator;
 using static ConsoleApp1.Shape;
 
@@ -14,6 +15,14 @@ Console.WriteLine($"Area of rect with height {r.Height} and width {r.Width}: {Ar
 Shape sh = new Circle(5.0f);
 Console.WriteLine($"Area of shape: {Area(sh)}");
 
+var ok = new Result.OK<string>("");
+var err = new Result.Error("");
+
+var a = ok.IsOK<string>();
+var b = err.IsError();
+
+return 0;
+
 namespace ConsoleApp1
 {
     [DiscriminatedUnion]
@@ -28,11 +37,20 @@ namespace ConsoleApp1
         internal static double Area(Shape shape) =>
             shape switch
             {
-                Circle { Radius: var radius } => Math.PI * radius * radius,
-                EquilateralTriangle { SideLength: var s } => Math.Sqrt(3.0) / 4.0 * s * s,
-                Square { SideLength: var s } => s * s,
-                Rectangle { Height: var h, Width: var w } => h * w,
+                // alt syntax: Circle { Radius: var radius } => Math.PI * radius * radius,
+
+                Circle(var radius) => Math.PI * radius * radius,
+                EquilateralTriangle(var side) => Math.Sqrt(3.0) / 4.0 * side * side,
+                Square(var side) => side * side,
+                Rectangle(var height, var width) => height * width,
                 _ => throw new NotImplementedException(),
             };
+    }
+
+    [DiscriminatedUnion]
+    abstract partial record Result
+    {
+        internal partial record OK<T>(T Value);
+        internal partial record Error(string Message);
     }
 }

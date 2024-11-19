@@ -6,29 +6,17 @@ using System.Text;
 
 namespace DiscriminatedUnion.Generator;
 
-public static class SourceGenerationHelper
-{
-    public const string Attribute = @"
-namespace DiscriminatedUnion.Generator
-{
-    [System.AttributeUsage(System.AttributeTargets.Class)]
-    public class DiscriminatedUnionAttribute : System.Attribute
-    {
-    }
-}";
-}
-
-
 [Generator]
-public class DUGenerator : IIncrementalGenerator
+public class DiscriminatedUnionGenerator : IIncrementalGenerator
 {
-    public readonly record struct DUToGenerate(string Name, string Namespace, List<(string Name, Accessibility Accessibility)> Children);
+    public readonly record struct DUMember(string Name, Accessibility Accessibility, bool IsGenericType, List<string> GenericTypeNames);
+    public readonly record struct DUToGenerate(string Name, string Namespace, List<DUMember> Children);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         // Add the marker attribute
         context.RegisterPostInitializationOutput(static ctx => ctx.AddSource(
-            "DiscriminatedUnionAttribute.g.cs", SourceText.From(SourceGenerationHelper.Attribute, Encoding.UTF8)));
+            "DiscriminatedUnionAttribute.g.cs", SourceText.From(AttributeHelper.Attribute, Encoding.UTF8)));
 
         IncrementalValuesProvider<DUToGenerate?> dusToGenerate = context.SyntaxProvider
             .CreateSyntaxProvider(
@@ -80,7 +68,7 @@ public class DUGenerator : IIncrementalGenerator
         }
 
         var recordMembers = recordSymbol.GetTypeMembers();
-        var members = new List<(string Name, Accessibility Accessibility)>(recordMembers.Length);
+        var members = new List<DUMember>(recordMembers.Length);
 
         foreach (var member in recordMembers)
         {
@@ -90,7 +78,13 @@ public class DUGenerator : IIncrementalGenerator
                 continue;
             }
 
-            members.Add((member.Name, member.DeclaredAccessibility));
+            var genericTypeNames = new List<string>(member.TypeArguments.Length);
+            foreach (var arg in member.TypeArguments)
+            {
+                genericTypeNames.Add(arg.Name);
+            }
+
+            members.Add(new(member.Name, member.DeclaredAccessibility, member.IsGenericType, genericTypeNames));
         }
 
         return new DUToGenerate(recordSymbol.Name, recordSymbol.ContainingNamespace.ToDisplayString(), members);
@@ -119,8 +113,8 @@ namespace {duToGenerate.Namespace}
         {
             sb.Append(@$"
 
-        {GetAccessibility(child.Accessibility)} sealed partial record {child.Name} : {duToGenerate.Name};
-        {GetAccessibility(child.Accessibility)} bool Is{child.Name} => this is {child.Name};");
+        {GetAccessibility(child.Accessibility)} sealed partial record {GetTypeMemberName(child)} : {duToGenerate.Name};
+        {GetAccessibility(child.Accessibility)} bool Is{GetTypeMemberName(child)}() => this is {GetTypeMemberName(child)};");
         }
 
         sb.Append("\n    }\n}");
@@ -140,5 +134,7 @@ namespace {duToGenerate.Namespace}
                 _ => throw new NotImplementedException()
             };
 
+        static string GetTypeMemberName(DUMember member) =>
+            member.IsGenericType ? $"{member.Name}<{string.Join(", ", member.GenericTypeNames)}>" : member.Name;
     }
 }

@@ -17,11 +17,49 @@ namespace Project1;
 [DiscriminatedUnion]
 abstract partial record Shape
 {
-    partial internal record Circle(float Radius);
-    partial internal record EquilateralTriangle(double SideLength);
-    partial internal record Square(double SideLength);
-    partial internal record Rectangle(double Height, double Width);
-    internal record X(double Height, double Width);
+    internal partial record Circle(float Radius);
+    internal partial record EquilateralTriangle(double SideLength);
+    internal partial record Square(double SideLength);
+    internal partial record Rectangle(double Height, double Width);
+}";
+
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task GeneratesDUCorrectly_SkipsNonPartialField()
+    {
+        var source = @"
+using DiscriminatedUnion.Generator;
+
+namespace Project1;
+
+[DiscriminatedUnion]
+abstract partial record Shape
+{
+    internal partial record Circle(float Radius);
+    internal partial record EquilateralTriangle(double SideLength);
+    internal partial record Square(double SideLength);
+    internal record Rectangle(double Height, double Width);
+}";
+
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task GeneratesDUCorrectly_WithGenerics()
+    {
+        var source = @"
+using DiscriminatedUnion.Generator;
+
+namespace Project1;
+
+[DiscriminatedUnion]
+abstract partial record Result
+{
+    internal partial record OK<T>(T Value);
+    internal partial record OK<T, T1, T2>(T Value, T1 Value1, T2 Value2);
+    internal partial record Error(string Message);
 }";
 
         return TestHelper.Verify(source);
@@ -53,7 +91,7 @@ public static class TestHelper
             syntaxTrees: [syntaxTree],
             references: references);
 
-        var generator = new DUGenerator();
+        var generator = new DiscriminatedUnionGenerator();
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
 
