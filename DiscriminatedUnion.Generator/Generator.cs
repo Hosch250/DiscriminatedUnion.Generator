@@ -18,7 +18,7 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
         context.RegisterPostInitializationOutput(static ctx => ctx.AddSource(
             "DiscriminatedUnionAttribute.g.cs", SourceText.From(AttributeHelper.Attribute, Encoding.UTF8)));
 
-        IncrementalValuesProvider<DUToGenerate?> dusToGenerate = context.SyntaxProvider
+        var dusToGenerate = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (s, _) => IsSyntaxTargetForGeneration(s),
                 transform: static (ctx, _) => GetSemanticTargetForGeneration(ctx))
@@ -37,9 +37,9 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
         var recordDeclarationSyntax = (RecordDeclarationSyntax)context.Node;
 
         // loop through all the attributes on the method
-        foreach (AttributeListSyntax attributeListSyntax in recordDeclarationSyntax.AttributeLists)
+        foreach (var attributeListSyntax in recordDeclarationSyntax.AttributeLists)
         {
-            foreach (AttributeSyntax attributeSyntax in attributeListSyntax.Attributes)
+            foreach (var attributeSyntax in attributeListSyntax.Attributes)
             {
                 if (context.SemanticModel.GetSymbolInfo(attributeSyntax).Symbol is not IMethodSymbol attributeSymbol)
                 {
@@ -47,8 +47,8 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
                     continue;
                 }
 
-                INamedTypeSymbol attributeContainingTypeSymbol = attributeSymbol.ContainingType;
-                string fullName = attributeContainingTypeSymbol.ToDisplayString();
+                var attributeContainingTypeSymbol = attributeSymbol.ContainingType;
+                var fullName = attributeContainingTypeSymbol.ToDisplayString();
 
                 if (fullName == "DiscriminatedUnion.Generator.DiscriminatedUnionAttribute")
                 {

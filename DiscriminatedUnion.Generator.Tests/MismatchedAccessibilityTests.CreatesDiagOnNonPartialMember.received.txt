@@ -1,0 +1,18 @@
+﻿
+namespace DiscriminatedUnion.Generator
+{
+    [System.AttributeUsage(System.AttributeTargets.Class)]
+    public class DiscriminatedUnionAttribute : System.Attribute
+    {
+    }
+}
+
+namespace ConsoleApp1
+{
+    [DiscriminatedUnion]
+    abstract partial record Result
+    {
+        internal partial record OK<T>(T Value);
+        internal record [|Error|](string Message);
+    }
+}

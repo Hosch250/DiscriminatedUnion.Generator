@@ -14,6 +14,7 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.2" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
 		<PackageReference Include="xunit" Version="2.9.2" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
@@ -22,10 +23,7 @@
 		</PackageReference>
 
 		<PackageReference Include="Verify.XUnit" Version="28.3.2" />
-		<PackageReference Include="Verify.SourceGenerators" Version="2.5.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" PrivateAssets="all" />
-		<PackageReference Include="Verify.XUnit" Version="28.3.2" />
 		<PackageReference Include="Verify.SourceGenerators" Version="2.5.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
 
@@ -37,6 +35,41 @@
 
 	<ItemGroup>
 		<Using Include="Xunit" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="MismatchedAccessibilityTests.CreatesDiagOnNonPartialMember.received.txt">
+	    <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0].Split('(')[0])</ParentFile>
+	    <DependentUpon>MismatchedAccessibilityTests.cs</DependentUpon>
+	  </None>
+	  <None Update="MismatchedAccessibilityTests.CreatesDiagOnNonPartialMember.verified.txt">
+	    <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0].Split('(')[0])</ParentFile>
+	    <DependentUpon>MismatchedAccessibilityTests.cs</DependentUpon>
+	  </None>
+	  <None Update="MismatchedAccessibilityTests.CreatesDiagOnNonPartialMemberAsync.received.txt">
+	    <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0].Split('(')[0])</ParentFile>
+	    <DependentUpon>MismatchedAccessibilityTests.cs</DependentUpon>
+	  </None>
+	  <None Update="MismatchedAccessibilityTests.CreatesDiagOnNonPartialMemberAsync.verified.txt">
+	    <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0].Split('(')[0])</ParentFile>
+	    <DependentUpon>MismatchedAccessibilityTests.cs</DependentUpon>
+	  </None>
+	  <None Update="InvalidAccessibilityTests.CreatesDiagOnNonPartialMember.received.txt">
+	    <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0].Split('(')[0])</ParentFile>
+	    <DependentUpon>InvalidAccessibilityTests.cs</DependentUpon>
+	  </None>
+	  <None Update="InvalidAccessibilityTests.CreatesDiagOnNonPartialMember.verified.txt">
+	    <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0].Split('(')[0])</ParentFile>
+	    <DependentUpon>InvalidAccessibilityTests.cs</DependentUpon>
+	  </None>
+	  <None Update="InvalidAccessibilityTests.CreatesDiagOnNonPartialMemberAsync.received.txt">
+	    <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0].Split('(')[0])</ParentFile>
+	    <DependentUpon>InvalidAccessibilityTests.cs</DependentUpon>
+	  </None>
+	  <None Update="InvalidAccessibilityTests.CreatesDiagOnNonPartialMemberAsync.verified.txt">
+	    <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0].Split('(')[0])</ParentFile>
+	    <DependentUpon>InvalidAccessibilityTests.cs</DependentUpon>
+	  </None>
 	</ItemGroup>
 
 </Project>
