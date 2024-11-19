@@ -28,11 +28,10 @@ namespace ConsoleApp1
     [DiscriminatedUnion]
     public abstract partial record Shape
     {
-        internal partial record Circle(float Radius);
-        internal partial record EquilateralTriangle(double SideLength);
-        internal partial record Square(double SideLength);
-        internal partial record Rectangle(double Height, double Width);
-        internal record X(double Height, double Width);
+        public partial record Circle(float Radius);
+        public partial record EquilateralTriangle(double SideLength);
+        public partial record Square(double SideLength);
+        public partial record Rectangle(double Height, double Width);
 
         internal static double Area(Shape shape) =>
             shape switch

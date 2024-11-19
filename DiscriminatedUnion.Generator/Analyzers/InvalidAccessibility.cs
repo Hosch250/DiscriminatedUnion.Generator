@@ -10,9 +10,9 @@ public class InvalidAccessibility : DiagnosticAnalyzer
     public static DiagnosticDescriptor Rule => new(
         "DU2",
         "Invalid Accessibility",
-        "A DU member is neither marked as public or internal",
+        "A DU or one of it's members member is neither marked as public or internal",
         "Discriminated Union",
-        DiagnosticSeverity.Warning,
+        DiagnosticSeverity.Error,
         true);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
