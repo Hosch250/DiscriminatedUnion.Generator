@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{D2C1BCEF-2A54-429E-A386-2E102D381927}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscriminatedUnion.Generator.Examples", "DiscriminatedUnion.Generator.Examples\DiscriminatedUnion.Generator.Examples.csproj", "{D2C1BCEF-2A54-429E-A386-2E102D381927}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscriminatedUnion.Generator", "DiscriminatedUnion.Generator\DiscriminatedUnion.Generator.csproj", "{F14E331A-C2B9-4D10-B8BC-B16C09554B0D}"
 EndProject
