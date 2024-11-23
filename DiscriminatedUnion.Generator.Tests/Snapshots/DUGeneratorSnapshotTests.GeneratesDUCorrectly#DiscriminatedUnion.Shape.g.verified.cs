@@ -7,15 +7,15 @@ namespace Project1
         private Shape() { }
 
         internal sealed partial record Circle : Shape;
-        internal bool IsCircle() => this is Circle;
+        internal bool IsCircle => this is Circle;
 
         internal sealed partial record EquilateralTriangle : Shape;
-        internal bool IsEquilateralTriangle() => this is EquilateralTriangle;
+        internal bool IsEquilateralTriangle => this is EquilateralTriangle;
 
         internal sealed partial record Square : Shape;
-        internal bool IsSquare() => this is Square;
+        internal bool IsSquare => this is Square;
 
         internal sealed partial record Rectangle : Shape;
-        internal bool IsRectangle() => this is Rectangle;
+        internal bool IsRectangle => this is Rectangle;
     }
 }

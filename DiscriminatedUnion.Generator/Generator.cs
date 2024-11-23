@@ -9,15 +9,11 @@ namespace DiscriminatedUnion.Generator;
 [Generator]
 public class DiscriminatedUnionGenerator : IIncrementalGenerator
 {
-    public readonly record struct DUMember(string Name, Accessibility Accessibility, bool IsGenericType, List<string> GenericTypeNames);
-    public readonly record struct DUToGenerate(string Name, string Namespace, List<DUMember> Children);
+    public readonly record struct DUMember(string Name, Accessibility Accessibility);
+    public readonly record struct DUToGenerate(string Name, string Namespace, List<DUMember> Children, List<string> GenericTypeNames);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        //// Add the marker attribute
-        //context.RegisterPostInitializationOutput(static ctx => ctx.AddSource(
-        //    "DiscriminatedUnionAttribute.g.cs", SourceText.From(AttributeHelper.Attribute, Encoding.UTF8)));
-
         var dusToGenerate = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (s, _) => IsSyntaxTargetForGeneration(s),
@@ -84,23 +80,20 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
             return null;
         }
 
-        var recordMembers = recordSymbol.GetTypeMembers();
-        var members = new List<DUMember>(recordMembers.Length);
-
-        foreach (var member in recordMembers)
+        var genericTypeNames = new List<string>(recordSymbol.TypeArguments.Length);
+        foreach (var arg in recordSymbol.TypeArguments)
         {
-            var syntaxNode = member.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as RecordDeclarationSyntax;
-
-            var genericTypeNames = new List<string>(member.TypeArguments.Length);
-            foreach (var arg in member.TypeArguments)
-            {
-                genericTypeNames.Add(arg.Name);
-            }
-
-            members.Add(new(member.Name, member.DeclaredAccessibility, member.IsGenericType, genericTypeNames));
+            genericTypeNames.Add(arg.Name);
         }
 
-        return new DUToGenerate(recordSymbol.Name, recordSymbol.ContainingNamespace.ToDisplayString(), members);
+        var recordMembers = recordSymbol.GetTypeMembers();
+        var members = new List<DUMember>(recordMembers.Length);
+        foreach (var member in recordMembers)
+        {
+            members.Add(new(member.Name, member.DeclaredAccessibility));
+        }
+
+        return new DUToGenerate(recordSymbol.Name, recordSymbol.ContainingNamespace.ToDisplayString(), members, genericTypeNames);
     }
 
     static void Execute(DUToGenerate? duToGenerate, SourceProductionContext context)
@@ -118,7 +111,7 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
         sb.Append(@$"
 namespace {duToGenerate.Namespace}
 {{
-    abstract partial record {duToGenerate.Name}
+    abstract partial record {GetTypeMemberName(duToGenerate)}
     {{
         private {duToGenerate.Name}() {{ }}");
 
@@ -126,8 +119,8 @@ namespace {duToGenerate.Namespace}
         {
             sb.Append(@$"
 
-        {GetAccessibility(child.Accessibility)} sealed partial record {GetTypeMemberName(child)} : {duToGenerate.Name};
-        {GetAccessibility(child.Accessibility)} bool Is{GetTypeMemberName(child)}() => this is {GetTypeMemberName(child)};");
+        {GetAccessibility(child.Accessibility)} sealed partial record {child.Name} : {GetTypeMemberName(duToGenerate)};
+        {GetAccessibility(child.Accessibility)} bool Is{child.Name} => this is {child.Name};");
         }
 
         sb.Append("\n    }\n}");
@@ -147,7 +140,7 @@ namespace {duToGenerate.Namespace}
                 _ => throw new NotImplementedException()
             };
 
-        static string GetTypeMemberName(DUMember member) =>
-            member.IsGenericType ? $"{member.Name}<{string.Join(", ", member.GenericTypeNames)}>" : member.Name;
+        static string GetTypeMemberName(DUToGenerate member) =>
+            member.GenericTypeNames.Count > 0 ? $"{member.Name}<{string.Join(", ", member.GenericTypeNames)}>" : member.Name;
     }
 }

@@ -55,11 +55,10 @@ using DiscriminatedUnion.Generator.Shared;
 namespace Project1;
 
 [DiscriminatedUnion]
-abstract partial record Result
+abstract partial record Result<TResult, TException>
 {
-    internal partial record OK<T>(T Value);
-    internal partial record OK<T, T1, T2>(T Value, T1 Value1, T2 Value2);
-    internal partial record Error(string Message);
+    internal partial record OK(TResult Value);
+    internal partial record Error(TException Message);
 }";
 
         return TestHelper.Verify(source);
