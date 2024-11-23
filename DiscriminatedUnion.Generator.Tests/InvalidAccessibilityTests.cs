@@ -17,7 +17,7 @@ namespace System.Runtime.CompilerServices
     internal static class IsExternalInit {{ }}
 }}
 
-namespace DiscriminatedUnion.Generator
+namespace DiscriminatedUnion.Generator.Shared
 {{
     [System.AttributeUsage(System.AttributeTargets.Class)]
     public class DiscriminatedUnionAttribute : System.Attribute
@@ -27,7 +27,7 @@ namespace DiscriminatedUnion.Generator
 
 namespace ConsoleApp1
 {{
-    using DiscriminatedUnion.Generator;
+    using DiscriminatedUnion.Generator.Shared;
 
     [DiscriminatedUnion]
     abstract partial record Result

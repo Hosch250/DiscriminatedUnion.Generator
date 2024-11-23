@@ -10,7 +10,7 @@ public class InvalidAccessibility : DiagnosticAnalyzer
     public static DiagnosticDescriptor Rule => new(
         "DU2",
         "Invalid Accessibility",
-        "A DU or one of it's members member is neither marked as public or internal",
+        "A DU or one of its members is neither marked as public or internal",
         "Discriminated Union",
         DiagnosticSeverity.Error,
         true);
@@ -28,7 +28,7 @@ public class InvalidAccessibility : DiagnosticAnalyzer
             {
                 foreach (var attribute in symbol.GetAttributes())
                 {
-                    if (attribute.AttributeClass?.ToDisplayString() == "DiscriminatedUnion.Generator.DiscriminatedUnionAttribute")
+                    if (attribute.AttributeClass?.IsDiscriminatedUnionAttribute() == true)
                     {
                         context.RegisterSymbolEndAction(context => Analyze(context, symbol));
                         return;

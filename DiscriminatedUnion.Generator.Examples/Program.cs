@@ -27,8 +27,8 @@ public abstract partial record Shape
 }
 
 [Shared.DiscriminatedUnion]
-abstract partial record Result<T>
+abstract partial record Result<T, T1>
 {
     internal partial record OK(T Value);
-    internal partial record Error(string Message);
+    internal partial record Error(T1 Message);
 }

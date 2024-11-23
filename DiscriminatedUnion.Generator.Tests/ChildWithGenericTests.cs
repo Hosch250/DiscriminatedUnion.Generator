@@ -1,13 +1,13 @@
 ﻿using Verify = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<
-    DiscriminatedUnion.Generator.Analyzers.MismatchedAccessibility,
+    DiscriminatedUnion.Generator.Analyzers.ChildWithGeneric,
     Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
 namespace DiscriminatedUnion.Generator.Tests;
 
-public class MismatchedAccessibilityTests
+public class ChildWithGenericTests
 {
     [Fact]
-    public async Task CreatesDiagOnPrivateMemberAsync()
+    public async Task CreatesDiagOnMemberWithGenericAsync()
     {
         await Verify.VerifyAnalyzerAsync(@$"
 namespace System.Runtime.CompilerServices
@@ -28,10 +28,10 @@ namespace ConsoleApp1
     using DiscriminatedUnion.Generator.Shared;
 
     [DiscriminatedUnion]
-    public abstract partial record Result
+    public abstract partial record Result<T>
     {{
-        public partial record A(int Value);
-        internal partial record {{|DU3:B|}}(string Message);
+        public partial record A(T Value);
+        internal partial record {{|DU1:B|}}<T1>(T1 Message);
     }}
 }}");
     }

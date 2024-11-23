@@ -1,13 +1,25 @@
-﻿namespace DiscriminatedUnion.Generator;
+﻿using Microsoft.CodeAnalysis;
+
+namespace DiscriminatedUnion.Generator;
 
 public static class AttributeHelper
 {
-    public const string Attribute = @"
-namespace DiscriminatedUnion.Generator
-{
-    [System.AttributeUsage(System.AttributeTargets.Class)]
-    public class DiscriminatedUnionAttribute : System.Attribute
-    {
-    }
-}";
+    public static bool IsDiscriminatedUnionAttribute(this ITypeSymbol typeSymbol) =>
+        typeSymbol is INamedTypeSymbol
+        {
+            MetadataName: "DiscriminatedUnionAttribute",
+            ContainingNamespace:
+            {
+                Name: "Shared",
+                ContainingNamespace:
+                {
+                    Name: "Generator",
+                    ContainingNamespace:
+                    {
+                        Name: "DiscriminatedUnion",
+                        ContainingNamespace.IsGlobalNamespace: true
+                    }
+                }
+            }
+        };
 }

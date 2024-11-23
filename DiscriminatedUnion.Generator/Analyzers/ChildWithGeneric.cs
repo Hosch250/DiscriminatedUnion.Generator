@@ -5,12 +5,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace DiscriminatedUnion.Generator.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class MismatchedAccessibility : DiagnosticAnalyzer
+public class ChildWithGeneric : DiagnosticAnalyzer
 {
     public static DiagnosticDescriptor Rule => new(
-        "DU3",
-        "Mismatched Accessibility",
-        "A DU member is marked with a different accessibility modifier than the parent",
+        "DU1",
+        "Child with Generic",
+        "A DU member contains a generic. All generics should be defined on the parent type.",
         "Discriminated Union",
         DiagnosticSeverity.Error,
         true);
@@ -40,12 +40,10 @@ public class MismatchedAccessibility : DiagnosticAnalyzer
 
     private static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol symbol)
     {
-        var expectedAccessibility = symbol.DeclaredAccessibility;
-
         var recordMembers = symbol.GetTypeMembers();
         foreach (var member in recordMembers)
         {
-            if (member.DeclaredAccessibility != expectedAccessibility)
+            if (member.TypeArguments.Length > 0)
             {
                 context.ReportDiagnostic(Diagnostic.Create(Rule, member.Locations.FirstOrDefault()));
             }

@@ -44,7 +44,7 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
                 }
 
                 var attributeContainingTypeSymbol = attributeSymbol.ContainingType;
-                if (IsDiscriminatedUnionAttribute(attributeContainingTypeSymbol))
+                if (attributeContainingTypeSymbol.IsDiscriminatedUnionAttribute())
                 {
                     return GetDUToGenerate(context.SemanticModel, recordDeclarationSyntax);
                 }
@@ -52,25 +52,6 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
         }
 
         return null;
-
-        static bool IsDiscriminatedUnionAttribute(ITypeSymbol typeSymbol) =>
-            typeSymbol is INamedTypeSymbol
-            {
-                MetadataName: "DiscriminatedUnionAttribute",
-                ContainingNamespace:
-                {
-                    Name: "Shared",
-                    ContainingNamespace:
-                    {
-                        Name: "Generator",
-                        ContainingNamespace:
-                        {
-                            Name: "DiscriminatedUnion",
-                            ContainingNamespace.IsGlobalNamespace: true
-                        }
-                    }
-                }
-            };
     }
 
     static DUToGenerate? GetDUToGenerate(SemanticModel semanticModel, RecordDeclarationSyntax recordDeclarationSyntax)
