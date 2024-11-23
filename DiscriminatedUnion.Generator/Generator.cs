@@ -14,9 +14,9 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Add the marker attribute
-        context.RegisterPostInitializationOutput(static ctx => ctx.AddSource(
-            "DiscriminatedUnionAttribute.g.cs", SourceText.From(AttributeHelper.Attribute, Encoding.UTF8)));
+        //// Add the marker attribute
+        //context.RegisterPostInitializationOutput(static ctx => ctx.AddSource(
+        //    "DiscriminatedUnionAttribute.g.cs", SourceText.From(AttributeHelper.Attribute, Encoding.UTF8)));
 
         var dusToGenerate = context.SyntaxProvider
             .CreateSyntaxProvider(
@@ -63,11 +63,15 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
                 MetadataName: "DiscriminatedUnionAttribute",
                 ContainingNamespace:
                 {
-                    Name: "Generator",
+                    Name: "Shared",
                     ContainingNamespace:
                     {
-                        Name: "DiscriminatedUnion",
-                        ContainingNamespace.IsGlobalNamespace: true
+                        Name: "Generator",
+                        ContainingNamespace:
+                        {
+                            Name: "DiscriminatedUnion",
+                            ContainingNamespace.IsGlobalNamespace: true
+                        }
                     }
                 }
             };

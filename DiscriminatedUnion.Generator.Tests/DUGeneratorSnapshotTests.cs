@@ -10,7 +10,7 @@ public class DUGeneratorSnapshotTests
     public Task GeneratesDUCorrectly()
     {
         var source = @"
-using DiscriminatedUnion.Generator;
+using DiscriminatedUnion.Generator.Shared;
 
 namespace Project1;
 
@@ -30,7 +30,7 @@ abstract partial record Shape
     public Task GeneratesDUCorrectly_IncludesNonPartialField()
     {
         var source = @"
-using DiscriminatedUnion.Generator;
+using DiscriminatedUnion.Generator.Shared;
 
 namespace Project1;
 
@@ -50,7 +50,7 @@ abstract partial record Shape
     public Task GeneratesDUCorrectly_WithGenerics()
     {
         var source = @"
-using DiscriminatedUnion.Generator;
+using DiscriminatedUnion.Generator.Shared;
 
 namespace Project1;
 
@@ -77,14 +77,20 @@ public static class ModuleInitializer
 
 public static class TestHelper
 {
+    private static readonly string dotNetAssemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
+
     public static Task Verify(string source)
     {
         SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source);
 
-        IEnumerable<PortableExecutableReference> references =
+        IEnumerable<PortableExecutableReference> references = AppDomain.CurrentDomain.GetAssemblies()
+        .Where(_ => !_.IsDynamic && !string.IsNullOrWhiteSpace(_.Location))
+        .Select(_ => MetadataReference.CreateFromFile(_.Location))
+        .Concat(
         [
-            MetadataReference.CreateFromFile(typeof(object).Assembly.Location)
-        ];
+            MetadataReference.CreateFromFile(typeof(Shared.DiscriminatedUnionAttribute).Assembly.Location),
+        ])
+        .ToList();
 
         CSharpCompilation compilation = CSharpCompilation.Create(
             assemblyName: "Tests",

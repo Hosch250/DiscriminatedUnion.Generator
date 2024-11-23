@@ -5,7 +5,7 @@ class Program
     public static void Main() { }
 }
 
-[DiscriminatedUnion]
+[Shared.DiscriminatedUnion]
 public abstract partial record Shape
 {
     public partial record Circle(float Radius);
@@ -26,7 +26,7 @@ public abstract partial record Shape
         };
 }
 
-[DiscriminatedUnion]
+[Shared.DiscriminatedUnion]
 abstract partial record Result
 {
     internal partial record OK<T>(T Value);
