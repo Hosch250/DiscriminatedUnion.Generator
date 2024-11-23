@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using DiscriminatedUnion.Generator.Shared;
+using System.Text.Json;
 
 namespace DiscriminatedUnion.Generator.Examples;
 
@@ -15,7 +16,7 @@ class Program
     }
 }
 
-[Shared.DiscriminatedUnion(Serializable = true)]
+[DiscriminatedUnion(Serializable = true)]
 public abstract partial record Shape
 {
     public partial record Circle(float Radius);
@@ -39,9 +40,9 @@ public abstract partial record Shape
         };
 }
 
-[Shared.DiscriminatedUnion]
-abstract partial record Result<T, T1>
+[DiscriminatedUnion]
+public abstract partial record Result<T, T1>
 {
-    internal partial record OK(T Value);
-    internal partial record Error(T1 Message);
+    public partial record OK(T Value);
+    public partial record Error(T1 Message);
 }
