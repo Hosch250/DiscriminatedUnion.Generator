@@ -48,9 +48,7 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
                 }
 
                 var attributeContainingTypeSymbol = attributeSymbol.ContainingType;
-                var fullName = attributeContainingTypeSymbol.ToDisplayString();
-
-                if (fullName == "DiscriminatedUnion.Generator.DiscriminatedUnionAttribute")
+                if (IsDiscriminatedUnionAttribute(attributeContainingTypeSymbol))
                 {
                     return GetDUToGenerate(context.SemanticModel, recordDeclarationSyntax);
                 }
@@ -58,6 +56,21 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
         }
 
         return null;
+
+        static bool IsDiscriminatedUnionAttribute(ITypeSymbol typeSymbol) =>
+            typeSymbol is INamedTypeSymbol
+            {
+                MetadataName: "DiscriminatedUnionAttribute",
+                ContainingNamespace:
+                {
+                    Name: "Generator",
+                    ContainingNamespace:
+                    {
+                        Name: "DiscriminatedUnion",
+                        ContainingNamespace.IsGlobalNamespace: true
+                    }
+                }
+            };
     }
 
     static DUToGenerate? GetDUToGenerate(SemanticModel semanticModel, RecordDeclarationSyntax recordDeclarationSyntax)
@@ -73,10 +86,6 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
         foreach (var member in recordMembers)
         {
             var syntaxNode = member.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as RecordDeclarationSyntax;
-            if (syntaxNode?.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)) != true)
-            {
-                continue;
-            }
 
             var genericTypeNames = new List<string>(member.TypeArguments.Length);
             foreach (var arg in member.TypeArguments)
@@ -107,7 +116,7 @@ namespace {duToGenerate.Namespace}
 {{
     abstract partial record {duToGenerate.Name}
     {{
-        private {duToGenerate.Name}() {{}}");
+        private {duToGenerate.Name}() {{ }}");
 
         foreach (var child in duToGenerate.Children)
         {

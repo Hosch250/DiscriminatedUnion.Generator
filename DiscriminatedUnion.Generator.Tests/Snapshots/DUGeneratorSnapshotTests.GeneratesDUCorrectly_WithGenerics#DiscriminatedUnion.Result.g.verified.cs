@@ -4,7 +4,7 @@ namespace Project1
 {
     abstract partial record Result
     {
-        private Result() {}
+        private Result() { }
 
         internal sealed partial record OK<T> : Result;
         internal bool IsOK<T>() => this is OK<T>;

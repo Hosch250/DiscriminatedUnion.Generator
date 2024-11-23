@@ -4,7 +4,7 @@ namespace Project1
 {
     abstract partial record Shape
     {
-        private Shape() {}
+        private Shape() { }
 
         internal sealed partial record Circle : Shape;
         internal bool IsCircle() => this is Circle;

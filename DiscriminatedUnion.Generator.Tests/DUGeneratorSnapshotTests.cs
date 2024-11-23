@@ -27,7 +27,7 @@ abstract partial record Shape
     }
 
     [Fact]
-    public Task GeneratesDUCorrectly_SkipsNonPartialField()
+    public Task GeneratesDUCorrectly_IncludesNonPartialField()
     {
         var source = @"
 using DiscriminatedUnion.Generator;
