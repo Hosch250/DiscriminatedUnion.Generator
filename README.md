@@ -4,7 +4,7 @@ Bringing the power of F# discriminated unions to C#.
 ## Use
 Write discriminated unions with nested records:
 ```cs
-using DiscriminatedUnion.Generator;
+using DiscriminatedUnion.Generator.Shared;
 
 namespace MyApp;
 
@@ -30,9 +30,9 @@ public abstract partial record Shape
 }
 
 [DiscriminatedUnion]
-internal abstract partial record Result
+internal abstract partial record Result<T>
 {
-    internal partial record OK<T>(T Value);
+    internal partial record OK(T Value);
     internal partial record Error(string Message);
 }
 ```
@@ -46,30 +46,30 @@ namespace MyApp
         private Shape() {}
 
         internal sealed partial record Circle : Shape;
-        internal bool IsCircle() => this is Circle;
+        internal bool IsCircle => this is Circle;
 
         internal sealed partial record EquilateralTriangle : Shape;
-        internal bool IsEquilateralTriangle() => this is EquilateralTriangle;
+        internal bool IsEquilateralTriangle => this is EquilateralTriangle;
 
         internal sealed partial record Square : Shape;
-        internal bool IsSquare() => this is Square;
+        internal bool IsSquare => this is Square;
 
         internal sealed partial record Rectangle : Shape;
-        internal bool IsRectangle() => this is Rectangle;
+        internal bool IsRectangle => this is Rectangle;
     }
 }
 
 namespace MyApp
 {
-    abstract partial record Result
+    abstract partial record Result<T>
     {
         private Result() {}
 
-        internal sealed partial record OK<T> : Result;
-        internal bool IsOK<T>() => this is OK<T>;
+        internal sealed partial record OK : Result<T>;
+        internal bool IsOK => this is OK;
 
-        internal sealed partial record Error : Result;
-        internal bool IsError() => this is Error;
+        internal sealed partial record Error : Result<T>;
+        internal bool IsError => this is Error;
     }
 }
 ```
@@ -82,8 +82,8 @@ Logic:
 ## Analyzers
 Some analyzers are included to help prevent issues.
 
-### Non-Partial Member
-If you don't mark one of your members as partial, the generator will ignore it. However, this was probably a mistake, so this will raise a warning.
+### Child Member with Generic
+Generics must be included on the parent type; defining generic child types is not allowed (child members may use generics included on the parent type, however). This analyzer will raise an error.
 
 ### Invalid Accessibility
 DUs must be internal or public. Private types don't make sense in this case, because the derived members will not be visible, and protected types don't make sense because DUs cannot be further derived. This analyzer will raise an error.
