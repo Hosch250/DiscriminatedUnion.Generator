@@ -171,7 +171,10 @@ namespace {duToGenerate.Namespace}
                     if (value?.GetValueKind() == System.Text.Json.JsonValueKind.True)
                     {{
                         var type = typeof({member.Name}).GetNestedType(prop.Name[2..]);
-                        return System.Text.Json.JsonSerializer.Deserialize(node, type!) as {member.Name};
+                        if (type is not null)
+                        {{
+                            return System.Text.Json.JsonSerializer.Deserialize(node, type) as {member.Name};
+                        }}
                     }}
                 }}
 

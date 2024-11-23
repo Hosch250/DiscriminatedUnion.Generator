@@ -31,7 +31,10 @@ namespace Project1
                     if (value?.GetValueKind() == System.Text.Json.JsonValueKind.True)
                     {
                         var type = typeof(Shape).GetNestedType(prop.Name[2..]);
-                        return System.Text.Json.JsonSerializer.Deserialize(node, type!) as Shape;
+                        if (type is not null)
+                        {
+                            return System.Text.Json.JsonSerializer.Deserialize(node, type) as Shape;
+                        }
                     }
                 }
 

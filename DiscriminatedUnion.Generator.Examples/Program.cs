@@ -15,13 +15,16 @@ class Program
     }
 }
 
-[Shared.DiscriminatedUnion(Serializable = false)]
+[Shared.DiscriminatedUnion(Serializable = true)]
 public abstract partial record Shape
 {
     public partial record Circle(float Radius);
     public partial record EquilateralTriangle(double SideLength);
     public partial record Square(double SideLength);
     public partial record Rectangle(double Height, double Width);
+
+    public string IsYellow => bool.TrueString;
+    public bool IsCircle1 => true;
 
     internal static double Area(Shape shape) =>
         shape switch

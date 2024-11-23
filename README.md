@@ -77,7 +77,16 @@ namespace MyApp
 Logic:
 - Force a private constructor on the parent type so nobody can create a new instance of it.
 - Mark each implementation as `sealed`, so nobody can derive from them.
-- Implement `Is*` functions to be feature comparable with F#. Favor pattern matching when using, though.
+- Implement `Is*` properties. *Favor pattern matching when using, though.*
+
+### Serialization
+Set the `Serializable` property on your attribute: `[DiscriminatedUnion(Serializable = true)]`. This will add support for System.Text.Json serialization. When this flag is set, the following code will work:
+```cs
+var type = new Shape.Circle(5f);
+var json = JsonSerializer.Serialize(type);
+var resultCircle = JsonSerializer.Deserialize<Shape.Circle>(json);
+var resultShape = JsonSerializer.Deserialize<Shape>(json);
+```
 
 ## Analyzers
 Some analyzers are included to help prevent issues.
@@ -90,3 +99,6 @@ DUs must be internal or public. Private types don't make sense in this case, bec
 
 ### Mismatched Accessibility
 DUs and their members must have the same accessibility modifier. This analyzer will raise an error.
+
+### Serialization flag on Generic DU
+Generic DUs (such as the `Result<T>` shown above), cannot be deserialized.
