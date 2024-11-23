@@ -43,7 +43,25 @@ namespace Project1
 
             public override void Write(System.Text.Json.Utf8JsonWriter writer, Shape value, System.Text.Json.JsonSerializerOptions options)
             {
-                System.Text.Json.JsonSerializer.Serialize(writer, value, options);
+                writer.WriteStartObject();
+
+                foreach (var prop in value.GetType().GetProperties())
+                {
+                    string propertyName = prop.Name;
+
+                    var val = value.GetType().GetProperty(propertyName)?.GetValue(value);
+                    if (val is not null)
+                    {
+                        writer.WritePropertyName(options.PropertyNamingPolicy?.ConvertName(propertyName) ?? propertyName);
+                        System.Text.Json.JsonSerializer.Serialize(writer, val, options);
+                    }
+                    else
+                    {
+                        writer.WriteNull(propertyName);
+                    }
+                }
+
+                writer.WriteEndObject();
             }
         }
     }
