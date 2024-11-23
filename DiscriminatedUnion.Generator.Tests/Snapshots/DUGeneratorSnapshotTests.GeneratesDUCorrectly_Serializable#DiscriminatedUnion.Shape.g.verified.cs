@@ -2,7 +2,7 @@
 
 namespace Project1
 {
-    [System.Text.Json.JsonConverter(typeof(ShapeConverter))]
+    [System.Text.Json.Serialization.JsonConverter(typeof(ShapeConverter))]
     abstract partial record Shape
     {
         private Shape() { }
@@ -20,27 +20,27 @@ namespace Project1
         internal bool IsRectangle => this is Rectangle;
 
         [DiscriminatedUnion.Generator.Shared.DiscriminatedUnionIgnore]
-        private sealed class ShapeConverter : JsonConverter<Shape>
+        private sealed class ShapeConverter : System.Text.Json.Serialization.JsonConverter<Shape>
         {
-            public override Shape? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            public override Shape? Read(ref System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options)
             {
-                var node = JsonNode.Parse(ref reader);
+                var node = System.Text.Json.Nodes.JsonNode.Parse(ref reader);
                 foreach (var prop in typeof(Shape).GetProperties())
                 {
                     var value = node?[prop.Name];
-                    if (value?.GetValueKind() == JsonValueKind.True)
+                    if (value?.GetValueKind() == System.Text.Json.JsonValueKind.True)
                     {
                         var type = typeof(Shape).GetNestedType(prop.Name[2..]);
-                        return JsonSerializer.Deserialize(node, type!) as Shape;
+                        return System.Text.Json.JsonSerializer.Deserialize(node, type!) as Shape;
                     }
                 }
 
                 return null;
             }
 
-            public override void Write(Utf8JsonWriter writer, Shape value, JsonSerializerOptions options)
+            public override void Write(System.Text.Json.Utf8JsonWriter writer, Shape value, System.Text.Json.JsonSerializerOptions options)
             {
-                JsonSerializer.Serialize(writer, value, options);
+                System.Text.Json.JsonSerializer.Serialize(writer, value, options);
             }
         }
     }
