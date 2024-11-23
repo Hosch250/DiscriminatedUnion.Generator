@@ -63,6 +63,26 @@ abstract partial record Result<TResult, TException>
 
         return TestHelper.Verify(source);
     }
+
+    [Fact]
+    public Task GeneratesDUCorrectly_Serializable()
+    {
+        var source = @"
+using DiscriminatedUnion.Generator.Shared;
+
+namespace Project1;
+
+[DiscriminatedUnion(Serializable = true)]
+abstract partial record Shape
+{
+    internal partial record Circle(float Radius);
+    internal partial record EquilateralTriangle(double SideLength);
+    internal partial record Square(double SideLength);
+    internal partial record Rectangle(double Height, double Width);
+}";
+
+        return TestHelper.Verify(source);
+    }
 }
 
 public static class ModuleInitializer

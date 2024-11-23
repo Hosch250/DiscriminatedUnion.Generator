@@ -2,6 +2,7 @@
 
 namespace Project1
 {
+    
     abstract partial record Result<TResult, TException>
     {
         private Result() { }

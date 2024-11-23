@@ -1,11 +1,21 @@
-﻿namespace DiscriminatedUnion.Generator.Examples;
+﻿using System.Text.Json;
+
+namespace DiscriminatedUnion.Generator.Examples;
 
 class Program
 {
-    public static void Main() { }
+    public static int Main()
+    {
+        var type = new Shape.Circle(5f);
+        var json = JsonSerializer.Serialize(type);
+        var resultCircle = JsonSerializer.Deserialize<Shape.Circle>(json);
+        var resultShape = JsonSerializer.Deserialize<Shape>(json);
+
+        return 0;
+    }
 }
 
-[Shared.DiscriminatedUnion]
+[Shared.DiscriminatedUnion(Serializable = false)]
 public abstract partial record Shape
 {
     public partial record Circle(float Radius);

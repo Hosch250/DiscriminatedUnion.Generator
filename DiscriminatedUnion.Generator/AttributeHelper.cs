@@ -22,4 +22,23 @@ public static class AttributeHelper
                 }
             }
         };
+
+    public static bool IsDiscriminatedUnionIgnoreAttribute(this ITypeSymbol typeSymbol) =>
+        typeSymbol is INamedTypeSymbol
+        {
+            MetadataName: "DiscriminatedUnionIgnoreAttribute",
+            ContainingNamespace:
+            {
+                Name: "Shared",
+                ContainingNamespace:
+                {
+                    Name: "Generator",
+                    ContainingNamespace:
+                    {
+                        Name: "DiscriminatedUnion",
+                        ContainingNamespace.IsGlobalNamespace: true
+                    }
+                }
+            }
+        };
 }

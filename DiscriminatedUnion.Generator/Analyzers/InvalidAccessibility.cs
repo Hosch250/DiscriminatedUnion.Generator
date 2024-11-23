@@ -48,6 +48,14 @@ public class InvalidAccessibility : DiagnosticAnalyzer
         var recordMembers = symbol.GetTypeMembers();
         foreach (var member in recordMembers)
         {
+            foreach (var attribute in member.GetAttributes())
+            {
+                if (attribute.AttributeClass?.IsDiscriminatedUnionIgnoreAttribute() == true)
+                {
+                    continue;
+                }
+            }
+
             if (!HasValidAccessibilityModifier(member))
             {
                 context.ReportDiagnostic(Diagnostic.Create(Rule, member.Locations.FirstOrDefault()));

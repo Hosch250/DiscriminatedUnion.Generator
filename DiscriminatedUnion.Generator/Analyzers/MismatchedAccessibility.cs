@@ -45,6 +45,14 @@ public class MismatchedAccessibility : DiagnosticAnalyzer
         var recordMembers = symbol.GetTypeMembers();
         foreach (var member in recordMembers)
         {
+            foreach (var attribute in member.GetAttributes())
+            {
+                if (attribute.AttributeClass?.IsDiscriminatedUnionIgnoreAttribute() == true)
+                {
+                    continue;
+                }
+            }
+
             if (member.DeclaredAccessibility != expectedAccessibility)
             {
                 context.ReportDiagnostic(Diagnostic.Create(Rule, member.Locations.FirstOrDefault()));

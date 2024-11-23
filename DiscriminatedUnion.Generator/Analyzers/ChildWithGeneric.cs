@@ -43,6 +43,14 @@ public class ChildWithGeneric : DiagnosticAnalyzer
         var recordMembers = symbol.GetTypeMembers();
         foreach (var member in recordMembers)
         {
+            foreach (var attribute in member.GetAttributes())
+            {
+                if (attribute.AttributeClass?.IsDiscriminatedUnionIgnoreAttribute() == true)
+                {
+                    continue;
+                }
+            }
+
             if (member.TypeArguments.Length > 0)
             {
                 context.ReportDiagnostic(Diagnostic.Create(Rule, member.Locations.FirstOrDefault()));
