@@ -16,7 +16,19 @@ class Program
         var w = json == jsona && json == jsonb;
 
 
-        Tree type1 = new Tree.Node(new Tree.Node(new Tree.Node(new Tree.Leaf("A")), new Tree.Node(new Tree.Node(new Tree.Leaf("B"), new Tree.Leaf("C")), new Tree.Node(new Tree.Node(new Tree.Leaf("D")), new Tree.Leaf("E")))));
+        Tree type1 = new Tree.Node(
+            new Tree.Node(
+                new Tree.Node(
+                    new Tree.Leaf("A")),
+                new Tree.Node(
+                    new Tree.Node(
+                        new Tree.Leaf("B"),
+                        new Tree.Leaf("C")),
+                    new Tree.Node(
+                        new Tree.Node(
+                            new Tree.Leaf("D"))))),
+            new Tree.Leaf("E"));
+
         var json1 = JsonSerializer.Serialize(type1);
         var result1 = JsonSerializer.Deserialize<Tree>(json1);
         var json2 = JsonSerializer.Serialize(result1);
