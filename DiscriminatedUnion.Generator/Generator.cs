@@ -10,8 +10,8 @@ namespace DiscriminatedUnion.Generator;
 [Generator]
 public class DiscriminatedUnionGenerator : IIncrementalGenerator
 {
-    public readonly record struct DUMember(string Name, Accessibility Accessibility);
-    public readonly record struct DUToGenerate(string Name, string Namespace, List<DUMember> Children, List<string> GenericTypeNames, bool Serializable);
+    internal readonly record struct DUMember(string Name, Accessibility Accessibility);
+    internal readonly record struct DUToGenerate(string Name, string Namespace, EquatableArray<DUMember> Children, EquatableArray<string> GenericTypeNames, bool Serializable);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -24,10 +24,7 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
             static (spc, source) => Execute(source, spc));
     }
 
-    static bool IsSyntaxTargetForGeneration(SyntaxNode node)
-        => node is RecordDeclarationSyntax m && m.AttributeLists.Count > 0;
-
-    static DUToGenerate? GetSemanticTargetForGeneration(GeneratorAttributeSyntaxContext context)
+    internal static DUToGenerate? GetSemanticTargetForGeneration(GeneratorAttributeSyntaxContext context)
     {
         var recordDeclarationSyntax = (RecordDeclarationSyntax)context.TargetNode;
 
@@ -52,7 +49,7 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
         return null;
     }
 
-    static DUToGenerate? GetDUToGenerate(SemanticModel semanticModel, RecordDeclarationSyntax recordDeclarationSyntax)
+    internal static DUToGenerate? GetDUToGenerate(SemanticModel semanticModel, RecordDeclarationSyntax recordDeclarationSyntax)
     {
         if (semanticModel.GetDeclaredSymbol(recordDeclarationSyntax) is not INamedTypeSymbol recordSymbol)
         {
@@ -95,10 +92,15 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
             }
         }
 
-        return new DUToGenerate(recordSymbol.Name, recordSymbol.ContainingNamespace.ToDisplayString(), members, genericTypeNames, serializable);
+        return new DUToGenerate(
+            recordSymbol.Name,
+            recordSymbol.ContainingNamespace.ToDisplayString(),
+            new EquatableArray<DUMember>([.. members]),
+            new EquatableArray<string>([.. genericTypeNames]),
+            serializable);
     }
 
-    static void Execute(DUToGenerate? duToGenerate, SourceProductionContext context)
+    internal static void Execute(DUToGenerate? duToGenerate, SourceProductionContext context)
     {
         if (duToGenerate is { } value)
         {
@@ -107,7 +109,7 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
         }
     }
 
-    public static string GenerateExtensionClass(DUToGenerate duToGenerate)
+    internal static string GenerateExtensionClass(DUToGenerate duToGenerate)
     {
         var sb = new StringBuilder();
         sb.Append(@$"
