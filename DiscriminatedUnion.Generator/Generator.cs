@@ -16,10 +16,9 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var dusToGenerate = context.SyntaxProvider
-            .CreateSyntaxProvider(
-                predicate: static (s, _) => IsSyntaxTargetForGeneration(s),
-                transform: static (ctx, _) => GetSemanticTargetForGeneration(ctx))
-            .Where(static m => m is not null);
+            .ForAttributeWithMetadataName("DiscriminatedUnion.Generator.Shared.DiscriminatedUnionAttribute",
+            predicate: (node, _) => node is RecordDeclarationSyntax,
+            transform: (ctx, _) => GetSemanticTargetForGeneration(ctx));
 
         context.RegisterSourceOutput(dusToGenerate,
             static (spc, source) => Execute(source, spc));
@@ -28,9 +27,9 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
     static bool IsSyntaxTargetForGeneration(SyntaxNode node)
         => node is RecordDeclarationSyntax m && m.AttributeLists.Count > 0;
 
-    static DUToGenerate? GetSemanticTargetForGeneration(GeneratorSyntaxContext context)
+    static DUToGenerate? GetSemanticTargetForGeneration(GeneratorAttributeSyntaxContext context)
     {
-        var recordDeclarationSyntax = (RecordDeclarationSyntax)context.Node;
+        var recordDeclarationSyntax = (RecordDeclarationSyntax)context.TargetNode;
 
         foreach (var attributeListSyntax in recordDeclarationSyntax.AttributeLists)
         {
