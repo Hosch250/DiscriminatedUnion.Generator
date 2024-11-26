@@ -1,5 +1,8 @@
 ﻿using SharpUnion.Shared;
-using System.Text.Json;
+
+[module:SharpUnionModule(@"union Tree
+| Node(params Tree?[] trees)
+| Leaf(string Name)", Serializable = true, Accessibility = Accessibility.Public)]
 
 namespace SharpUnion.Examples;
 
@@ -50,12 +53,12 @@ public abstract partial record Shape
         };
 }
 
-[SharpUnion(Serializable = true)]
-public abstract partial record Tree
-{
-    public partial record Node(Tree? Right = null, Tree? Left = null);
-    public partial record Leaf(string Name);
-}
+//[SharpUnion(Serializable = true)]
+//public abstract partial record Tree
+//{
+//    public partial record Node(Tree? Right = null, Tree? Left = null);
+//    public partial record Leaf(string Name);
+//}
 
 [SharpUnion]
 public abstract partial record Result<T, T1>

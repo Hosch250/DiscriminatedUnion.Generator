@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Text;
+using Accessibility = Microsoft.CodeAnalysis.Accessibility;
 
 namespace SharpUnion;
 
