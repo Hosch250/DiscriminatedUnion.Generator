@@ -11,8 +11,8 @@ namespace SharpUnion;
 [Generator]
 public class Generator : IIncrementalGenerator
 {
-    internal readonly record struct DUMember(string Name, Accessibility Accessibility);
-    internal readonly record struct DUToGenerate(string Name, string Namespace, EquatableArray<DUMember> Children, EquatableArray<string> GenericTypeNames, bool Serializable);
+    private readonly record struct DUMember(string Name, Accessibility Accessibility);
+    private readonly record struct DUToGenerate(string Name, string Namespace, EquatableArray<DUMember> Children, EquatableArray<string> GenericTypeNames, bool Serializable);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -25,7 +25,7 @@ public class Generator : IIncrementalGenerator
             static (spc, source) => Execute(source, spc));
     }
 
-    internal static DUToGenerate? GetSemanticTargetForGeneration(GeneratorAttributeSyntaxContext context)
+    private static DUToGenerate? GetSemanticTargetForGeneration(GeneratorAttributeSyntaxContext context)
     {
         var recordDeclarationSyntax = (RecordDeclarationSyntax)context.TargetNode;
 
@@ -50,7 +50,7 @@ public class Generator : IIncrementalGenerator
         return null;
     }
 
-    internal static DUToGenerate? GetDUToGenerate(SemanticModel semanticModel, RecordDeclarationSyntax recordDeclarationSyntax)
+    private static DUToGenerate? GetDUToGenerate(SemanticModel semanticModel, RecordDeclarationSyntax recordDeclarationSyntax)
     {
         if (semanticModel.GetDeclaredSymbol(recordDeclarationSyntax) is not INamedTypeSymbol recordSymbol)
         {
@@ -105,7 +105,7 @@ public class Generator : IIncrementalGenerator
             serializable);
     }
 
-    internal static void Execute(DUToGenerate? duToGenerate, SourceProductionContext context)
+    private static void Execute(DUToGenerate? duToGenerate, SourceProductionContext context)
     {
         if (duToGenerate is { } value)
         {
@@ -114,7 +114,7 @@ public class Generator : IIncrementalGenerator
         }
     }
 
-    internal static string GenerateExtensionClass(DUToGenerate duToGenerate)
+    private static string GenerateExtensionClass(DUToGenerate duToGenerate)
     {
         var sb = new StringBuilder();
         sb.Append($@"

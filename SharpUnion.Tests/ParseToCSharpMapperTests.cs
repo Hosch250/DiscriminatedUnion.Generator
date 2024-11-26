@@ -13,7 +13,7 @@ union Shape =
 | Rectangle(float Width, float Length)
 | Circle(float Radius);";
 
-        var output = ParseToCSharpMapper.Map(Parse(input), "My.Namespace");
+        var output = ParseToCSharpMapper.Map(Parse(input), "My.Namespace", Shared.Accessibility.Public);
 
         var expected = @"
 namespace My.Namespace
@@ -44,21 +44,21 @@ union Result<TResult, TException> =
 | OK(TResult Value)
 | Error(TException Message);";
 
-        var output = ParseToCSharpMapper.Map(Parse(input), "My.Namespace");
+        var output = ParseToCSharpMapper.Map(Parse(input), "My.Namespace", Shared.Accessibility.Internal);
 
         var expected = @"
 namespace My.Namespace
 {@@UnionAttributes@@
     [System.CodeDom.Compiler.GeneratedCode(""SharpUnion"", ""2.0.0"")]
-    public abstract partial record Result<TResult, TException>
+    internal abstract partial record Result<TResult, TException>
     {
         private Result() { }
 
-        public sealed partial record OK(TResult Value) : Result<TResult, TException>;
-        public bool IsOK => this is OK;
+        internal sealed partial record OK(TResult Value) : Result<TResult, TException>;
+        internal bool IsOK => this is OK;
 
-        public sealed partial record Error(TException Message) : Result<TResult, TException>;
-        public bool IsError => this is Error;
+        internal sealed partial record Error(TException Message) : Result<TResult, TException>;
+        internal bool IsError => this is Error;
 
         @@UnionMembers@@
     }

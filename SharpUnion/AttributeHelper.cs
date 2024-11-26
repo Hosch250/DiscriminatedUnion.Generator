@@ -2,9 +2,9 @@
 
 namespace SharpUnion;
 
-public static class AttributeHelper
+internal static class AttributeHelper
 {
-    public static bool IsSharpUnionAttribute(this ITypeSymbol typeSymbol) =>
+    internal static bool IsSharpUnionAttribute(this ITypeSymbol typeSymbol) =>
         typeSymbol is INamedTypeSymbol
         {
             MetadataName: "SharpUnionAttribute",
@@ -19,7 +19,7 @@ public static class AttributeHelper
             }
         };
 
-    public static bool IsSharpUnionIgnoreAttribute(this ITypeSymbol typeSymbol) =>
+    internal static bool IsSharpUnionIgnoreAttribute(this ITypeSymbol typeSymbol) =>
         typeSymbol is INamedTypeSymbol
         {
             MetadataName: "SharpUnionIgnoreAttribute",

@@ -1,24 +1,25 @@
 ﻿using SharpUnion.Parser;
+using SharpUnion.Shared;
 using System.Text;
 
 namespace SharpUnion;
 
 public static class ParseToCSharpMapper
 {
-    public static string Map(UnionParser.UnionStmtContext unionStmt, string ns)
+    public static string Map(UnionParser.UnionStmtContext unionStmt, string ns, Accessibility accessibility)
     {
         var sb = new StringBuilder();
         sb.Append($@"
 namespace {ns}
 {{@@UnionAttributes@@
     [System.CodeDom.Compiler.GeneratedCode(""{AssemblyMetadata.AssemblyName}"", ""{AssemblyMetadata.AssemblyVersion}"")]
-    public abstract partial record {unionStmt.type().GetText()}
+    {Enum.GetName(typeof(Accessibility), accessibility).ToLower()} abstract partial record {unionStmt.type().GetText()}
     {{
         private {Identifier(unionStmt.type())}() {{ }}");
 
         foreach (var member in unionStmt.member())
         {
-            sb.Append(GetMember(member, unionStmt.type()));
+            sb.Append(GetMember(member, unionStmt.type(), accessibility));
         }
 
         sb.Append($@"
@@ -37,11 +38,11 @@ namespace {ns}
         _ => throw new NotImplementedException()
     };
 
-    private static string GetMember(UnionParser.MemberContext member, UnionParser.TypeContext parentType)
+    private static string GetMember(UnionParser.MemberContext member, UnionParser.TypeContext parentType, Accessibility accessibility)
     {
         return $@"
 
-        public sealed partial record {member.identifier().GetText()}{member.parameterList().GetText().Replace('\t', ' ')} : {parentType.GetText()};
-        public bool Is{member.identifier().GetText()} => this is {member.identifier().GetText()};";
+        {Enum.GetName(typeof(Accessibility), accessibility).ToLower()} sealed partial record {member.identifier().GetText()}{member.parameterList().GetText().Replace('\t', ' ')} : {parentType.GetText()};
+        {Enum.GetName(typeof(Accessibility), accessibility).ToLower()} bool Is{member.identifier().GetText()} => this is {member.identifier().GetText()};";
     }
 }
