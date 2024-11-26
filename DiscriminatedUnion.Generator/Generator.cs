@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using System.Reflection;
 using System.Text;
 
 namespace DiscriminatedUnion.Generator;
@@ -10,6 +11,9 @@ namespace DiscriminatedUnion.Generator;
 [Generator]
 public class DiscriminatedUnionGenerator : IIncrementalGenerator
 {
+
+    static readonly string assemblyVersion = Assembly.GetAssembly(typeof(DiscriminatedUnionGenerator)).GetName().Version.ToString(3);
+
     internal readonly record struct DUMember(string Name, Accessibility Accessibility);
     internal readonly record struct DUToGenerate(string Name, string Namespace, EquatableArray<DUMember> Children, EquatableArray<string> GenericTypeNames, bool Serializable);
 
@@ -118,6 +122,7 @@ namespace {duToGenerate.Namespace}
     {GetJsonConverterAttribute(duToGenerate)}
     abstract partial record {GetTypeMemberName(duToGenerate)}
     {{
+        [System.CodeDom.Compiler.GeneratedCode(""DiscriminatedUnion.Generator"", ""{assemblyVersion}"")]
         private {duToGenerate.Name}() {{ }}");
 
         foreach (var child in duToGenerate.Children)
@@ -125,6 +130,8 @@ namespace {duToGenerate.Namespace}
             sb.Append(@$"
 
         {GetAccessibility(child.Accessibility)} sealed partial record {child.Name} : {GetTypeMemberName(duToGenerate)};
+
+        [System.CodeDom.Compiler.GeneratedCode(""DiscriminatedUnion.Generator"", ""{assemblyVersion}"")]
         {GetAccessibility(child.Accessibility)} bool Is{child.Name} => this is {child.Name};");
         }
 
@@ -156,11 +163,11 @@ namespace {duToGenerate.Namespace}
         static string GetJsonConverterAttribute(DUToGenerate member) =>
             member.Serializable ? $"[System.Text.Json.Serialization.JsonConverter(typeof({member.Name}Converter))]" : "";
 
-        static string GetJsonConverter(DUToGenerate member)
-        {
-            return @$"
+        static string GetJsonConverter(DUToGenerate member) =>
+            @$"
 
         [DiscriminatedUnion.Generator.Shared.DiscriminatedUnionIgnore]
+        [System.CodeDom.Compiler.GeneratedCode(""DiscriminatedUnion.Generator"", ""{assemblyVersion}"")]
         private sealed class {member.Name}Converter : System.Text.Json.Serialization.JsonConverter<{member.Name}>
         {{
             public override {member.Name}? Read(ref System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options)
@@ -205,6 +212,5 @@ namespace {duToGenerate.Namespace}
                 writer.WriteEndObject();
             }}
         }}";
-        }
     }
 }
