@@ -5,6 +5,13 @@ namespace SharpUnion.Examples;
 
 class Program
 {
+    public (int, int) Foo()
+    {
+        return (0, 0);
+    }
+
+    public void Foo < T > (T i) { }
+
     public static int Main()
     {
         Shape type = new Shape.Circle(5f);
@@ -25,6 +32,7 @@ public abstract partial record Shape
     public partial record EquilateralTriangle(double SideLength);
     public partial record Square(double SideLength);
     public partial record Rectangle(double Height, double Width);
+    public partial record X(params string[] X1);
 
     public string IsYellow => bool.TrueString;
     public bool IsCircle1 => true;
