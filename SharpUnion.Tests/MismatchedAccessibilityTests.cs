@@ -9,7 +9,7 @@ public class MismatchedAccessibilityTests
     [Fact]
     public async Task CreatesDiagOnMemberAsync()
     {
-        await Verify.VerifyAnalyzerAsync(@$"
+        await Verify.VerifyAnalyzerAsync($@"
 namespace System.Runtime.CompilerServices
 {{
     internal static class IsExternalInit {{ }}
@@ -39,7 +39,7 @@ namespace ConsoleApp1
     [Fact]
     public async Task DoesNotCreateDiagOnIgnoredMemberAsync()
     {
-        await Verify.VerifyAnalyzerAsync(@$"
+        await Verify.VerifyAnalyzerAsync($@"
 namespace System.Runtime.CompilerServices
 {{
     internal static class IsExternalInit {{ }}

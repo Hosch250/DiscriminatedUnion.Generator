@@ -11,7 +11,7 @@ public class InvalidAccessibilityTests
     [InlineData("protected")]
     public async Task CreatesDiagOnMemberAsync(string accessibility)
     {
-        await Verify.VerifyAnalyzerAsync(@$"
+        await Verify.VerifyAnalyzerAsync($@"
 namespace System.Runtime.CompilerServices
 {{
     internal static class IsExternalInit {{ }}
@@ -43,7 +43,7 @@ namespace ConsoleApp1
     [InlineData("protected")]
     public async Task DoesNotCreatesDiagOnIgnoredMemberAsync(string accessibility)
     {
-        await Verify.VerifyAnalyzerAsync(@$"
+        await Verify.VerifyAnalyzerAsync($@"
 namespace System.Runtime.CompilerServices
 {{
     internal static class IsExternalInit {{ }}

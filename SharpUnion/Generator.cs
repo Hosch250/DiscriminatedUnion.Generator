@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using System.Reflection;
 using System.Text;
 
 namespace SharpUnion;
@@ -11,9 +10,6 @@ namespace SharpUnion;
 [Generator]
 public class Generator : IIncrementalGenerator
 {
-    static readonly string assemblyName = Assembly.GetAssembly(typeof(Generator)).GetName().Name;
-    static readonly string assemblyVersion = Assembly.GetAssembly(typeof(Generator)).GetName().Version.ToString(3);
-
     internal readonly record struct DUMember(string Name, Accessibility Accessibility);
     internal readonly record struct DUToGenerate(string Name, string Namespace, EquatableArray<DUMember> Children, EquatableArray<string> GenericTypeNames, bool Serializable);
 
@@ -120,22 +116,22 @@ public class Generator : IIncrementalGenerator
     internal static string GenerateExtensionClass(DUToGenerate duToGenerate)
     {
         var sb = new StringBuilder();
-        sb.Append(@$"
+        sb.Append($@"
 namespace {duToGenerate.Namespace}
 {{
     {GetJsonConverterAttribute(duToGenerate)}
     abstract partial record {GetTypeMemberName(duToGenerate)}
     {{
-        [System.CodeDom.Compiler.GeneratedCode(""{assemblyName}"", ""{assemblyVersion}"")]
+        [System.CodeDom.Compiler.GeneratedCode(""{AssemblyMetadata.AssemblyName}"", ""{AssemblyMetadata.AssemblyVersion}"")]
         private {duToGenerate.Name}() {{ }}");
 
         foreach (var child in duToGenerate.Children)
         {
-            sb.Append(@$"
+            sb.Append($@"
 
         {GetAccessibility(child.Accessibility)} sealed partial record {child.Name} : {GetTypeMemberName(duToGenerate)};
 
-        [System.CodeDom.Compiler.GeneratedCode(""SharpUnion"", ""{assemblyVersion}"")]
+        [System.CodeDom.Compiler.GeneratedCode(""SharpUnion"", ""{AssemblyMetadata.AssemblyVersion}"")]
         {GetAccessibility(child.Accessibility)} bool Is{child.Name} => this is {child.Name};");
         }
 
@@ -168,10 +164,10 @@ namespace {duToGenerate.Namespace}
             member.Serializable ? $"[System.Text.Json.Serialization.JsonConverter(typeof({member.Name}Converter))]" : "";
 
         static string GetJsonConverter(DUToGenerate member) =>
-            @$"
+            $@"
 
         [SharpUnion.Shared.SharpUnionIgnore]
-        [System.CodeDom.Compiler.GeneratedCode(""{assemblyName}"", ""{assemblyVersion}"")]
+        [System.CodeDom.Compiler.GeneratedCode(""{AssemblyMetadata.AssemblyName}"", ""{AssemblyMetadata.AssemblyVersion}"")]
         private sealed class {member.Name}Converter : System.Text.Json.Serialization.JsonConverter<{member.Name}>
         {{
             public override {member.Name}? Read(ref System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options)

@@ -9,7 +9,7 @@ public class SerializationOnGenericTypeTests
     [Fact]
     public async Task CreatesDiagOnGenericMemberAsync()
     {
-        await Verify.VerifyAnalyzerAsync(@$"
+        await Verify.VerifyAnalyzerAsync($@"
 namespace System.Runtime.CompilerServices
 {{
     internal static class IsExternalInit {{ }}

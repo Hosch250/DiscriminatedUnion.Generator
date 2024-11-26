@@ -5,31 +5,31 @@ namespace Project1
     [System.Text.Json.Serialization.JsonConverter(typeof(ShapeConverter))]
     abstract partial record Shape
     {
-        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "1.0.0")]
+        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "2.0.0")]
         private Shape() { }
 
         internal sealed partial record Circle : Shape;
 
-        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "1.0.0")]
+        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "2.0.0")]
         internal bool IsCircle => this is Circle;
 
         internal sealed partial record EquilateralTriangle : Shape;
 
-        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "1.0.0")]
+        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "2.0.0")]
         internal bool IsEquilateralTriangle => this is EquilateralTriangle;
 
         internal sealed partial record Square : Shape;
 
-        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "1.0.0")]
+        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "2.0.0")]
         internal bool IsSquare => this is Square;
 
         internal sealed partial record Rectangle : Shape;
 
-        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "1.0.0")]
+        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "2.0.0")]
         internal bool IsRectangle => this is Rectangle;
 
         [SharpUnion.Shared.SharpUnionIgnore]
-        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "1.0.0")]
+        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "2.0.0")]
         private sealed class ShapeConverter : System.Text.Json.Serialization.JsonConverter<Shape>
         {
             public override Shape? Read(ref System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options)
