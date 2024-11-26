@@ -68,7 +68,7 @@ public class ModuleSyntaxGenerator : IIncrementalGenerator
                     break;
 
                 case nameof(SharpUnionModuleAttribute.Accessibility):
-                    accessibility = arg.Value.Value as Accessibility? ?? Accessibility.Internal;
+                    accessibility = (Accessibility)(arg.Value.Value as int? ?? 0);
                     break;
             };
         }
