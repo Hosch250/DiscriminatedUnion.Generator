@@ -11,10 +11,10 @@ parameterList : OPENPAREN whitespace* (parameter whitespace* (COMMA whitespace* 
 parameter : (PARAMS whitespace*)? type whitespace* identifier;
 
 type :
-    OPENPAREN whitespace* type whitespace* (COMMA whitespace* type)+ whitespace* CLOSEPAREN                             # tupleType
-    | identifier whitespace* OPENBRACKET whitespace* CLOSEBRACKET                                                       # arrayType
-    | identifier whitespace* OPENCARET whitespace* type whitespace* (COMMA whitespace* type)* whitespace* CLOSECARET    # genericType
-    | identifier                                                                                                        # basicType
+    OPENPAREN whitespace* type whitespace* (COMMA whitespace* type)+ whitespace* CLOSEPAREN (whitespace* QUESTIONMARK)?                             # tupleType
+    | type whitespace* OPENBRACKET whitespace* CLOSEBRACKET (whitespace* QUESTIONMARK)?                                                       # arrayType
+    | identifier whitespace* OPENCARET whitespace* type whitespace* (COMMA whitespace* type)* whitespace* CLOSECARET (whitespace* QUESTIONMARK)?    # genericType
+    | identifier (whitespace* QUESTIONMARK)?                                                                                                        # basicType
 ;
 
 identifier : IDENTIFIER;

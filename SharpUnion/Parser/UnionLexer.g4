@@ -15,6 +15,7 @@ PIPE : '|';
 SEMICOLON : ';';
 EQUALS : '=';
 COMMA : ',';
+QUESTIONMARK : '?';
 
 WS : [ \t];
 NEWLINE : '\r' '\n' | [\r\n\u2028\u2029];

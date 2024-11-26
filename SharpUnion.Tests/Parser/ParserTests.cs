@@ -19,9 +19,12 @@ union Shape =
 | Rectangle(float Width, float Length)
 | Circle(float Radius);", 2)]
     [InlineData(@"
-union Shape =
+union Shape = 
     | Rectangle(float Width, float Length) 
     | Circle(float Radius) ;", 2)]
+    [InlineData(@"union Tree =
+| Node(params Tree?[] trees)
+| Leaf(string Name);", 2)]
     public void UnionStatement(string input, int memberCount)
     {
         var (parser, root) = Parse(input, p => p.unionStmt());
@@ -69,14 +72,23 @@ union Shape =
 
     [Theory]
     [InlineData("Foo", 1)]
+    [InlineData("Foo?", 1)]
     [InlineData("Foo<T>", 2)]
+    [InlineData("Foo<T?>?", 2)]
     [InlineData("Foo < T >", 2)]
+    [InlineData("Foo < T ? > ?", 2)]
     [InlineData("Foo<T, T1>", 3)]
     [InlineData("Foo<T<T1>>", 3)]
     [InlineData("(int, string, List<int>)", 5)]
+    [InlineData("(int, string, List<int>)?", 5)]
     [InlineData("List<(string, int)>", 4)]
-    [InlineData("int[]", 1)]
-    [InlineData("int [ ]", 1)]
+    [InlineData("List<(string, int)?>", 4)]
+    [InlineData("int[]", 2)]
+    [InlineData("int[]?", 2)]
+    [InlineData("int?[]", 2)]
+    [InlineData("int?[]?", 2)]
+    [InlineData("int [ ]", 2)]
+    [InlineData("int [ ] ?", 2)]
     public void TypeRule(string input, int typeCount)
     {
         var (parser, root) = Parse(input, p => p.type());

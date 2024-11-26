@@ -24,9 +24,7 @@ namespace {ns}
             sb.Append(GetMember(member, unionStmt.type(), accessibility));
         }
 
-        sb.Append($@"
-
-        @@UnionMembers@@
+        sb.Append($@"@@UnionMembers@@
     }}
 }}");
 

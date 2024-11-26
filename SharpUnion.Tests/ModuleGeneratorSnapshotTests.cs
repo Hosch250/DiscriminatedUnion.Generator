@@ -11,7 +11,7 @@ public class ModuleGeneratorSnapshotTests
         var source = @"
 using SharpUnion.Shared;
 
-[module:SharpUnionModule(""Program1"", @""union Tree()
+[module:SharpUnionModule(""Program1"", @""union Tree =
 | Node(params Tree?[] trees)
 | Leaf(string Name);"")]";
 
@@ -24,7 +24,7 @@ using SharpUnion.Shared;
         var source = @"
 using SharpUnion.Shared;
 
-[module:SharpUnionModule(""Program1"", @""union Result<TResult, TException>()
+[module:SharpUnionModule(""Program1"", @""union Result<TResult, TException> =
 | OK(TResult Value)
 | Error(TException Message);"")]";
 
@@ -37,7 +37,7 @@ using SharpUnion.Shared;
         var source = @"
 using SharpUnion.Shared;
 
-[module:SharpUnionModule(""Program1"", @""union Tree()
+[module:SharpUnionModule(""Program1"", @""union Tree =
 | Node(params Tree?[] trees)
 | Leaf(string Name);"", Serializable = true)]";
 
@@ -50,7 +50,7 @@ using SharpUnion.Shared;
         var source = @"
 using SharpUnion.Shared;
 
-[module:SharpUnionModule(""Program1"", @""union Tree()
+[module:SharpUnionModule(""Program1"", @""union Tree =
 | Node(params Tree?[] trees)
 | Leaf(string Name);"", Accessibility = Accessibility.Public)]";
 

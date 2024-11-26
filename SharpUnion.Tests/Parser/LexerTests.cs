@@ -19,6 +19,7 @@ public class LexerTests
     [InlineData(";", UnionLexer.SEMICOLON)]
     [InlineData("=", UnionLexer.EQUALS)]
     [InlineData(",", UnionLexer.COMMA)]
+    [InlineData("?", UnionLexer.QUESTIONMARK)]
     [InlineData("test", UnionLexer.IDENTIFIER)]
     [InlineData("test_test1", UnionLexer.IDENTIFIER)]
     [InlineData("_1test1", UnionLexer.IDENTIFIER)]

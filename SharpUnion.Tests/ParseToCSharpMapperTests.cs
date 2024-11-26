@@ -27,9 +27,7 @@ namespace My.Namespace
         public bool IsRectangle => this is Rectangle;
 
         public sealed partial record Circle(float Radius) : Shape;
-        public bool IsCircle => this is Circle;
-
-        @@UnionMembers@@
+        public bool IsCircle => this is Circle;@@UnionMembers@@
     }
 }";
 
@@ -59,9 +57,7 @@ namespace My.Namespace
         internal bool IsOK => this is OK;
 
         internal sealed partial record Error(TException Message) : Result<TResult, TException>;
-        internal bool IsError => this is Error;
-
-        @@UnionMembers@@
+        internal bool IsError => this is Error;@@UnionMembers@@
     }
 }";
 
