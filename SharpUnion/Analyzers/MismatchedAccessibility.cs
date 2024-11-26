@@ -11,7 +11,7 @@ public class MismatchedAccessibility : DiagnosticAnalyzer
         "DU3",
         "Mismatched Accessibility",
         "A DU member is marked with a different accessibility modifier than the parent",
-        "Discriminated Union",
+        "SharpUnion",
         DiagnosticSeverity.Error,
         true);
 
@@ -45,15 +45,16 @@ public class MismatchedAccessibility : DiagnosticAnalyzer
         var recordMembers = symbol.GetTypeMembers();
         foreach (var member in recordMembers)
         {
+            var ignoreMember = false;
             foreach (var attribute in member.GetAttributes())
             {
                 if (attribute.AttributeClass?.IsSharpUnionIgnoreAttribute() == true)
                 {
-                    continue;
+                    ignoreMember = true;
                 }
             }
 
-            if (member.DeclaredAccessibility != expectedAccessibility)
+            if (!ignoreMember && member.DeclaredAccessibility != expectedAccessibility)
             {
                 context.ReportDiagnostic(Diagnostic.Create(Rule, member.Locations.FirstOrDefault()));
             }

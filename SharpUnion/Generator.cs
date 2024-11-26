@@ -9,11 +9,10 @@ using System.Text;
 namespace SharpUnion;
 
 [Generator]
-public class DiscriminatedUnionGenerator : IIncrementalGenerator
+public class Generator : IIncrementalGenerator
 {
-
-    static readonly string assemblyName = Assembly.GetAssembly(typeof(DiscriminatedUnionGenerator)).GetName().Name;
-    static readonly string assemblyVersion = Assembly.GetAssembly(typeof(DiscriminatedUnionGenerator)).GetName().Version.ToString(3);
+    static readonly string assemblyName = Assembly.GetAssembly(typeof(Generator)).GetName().Name;
+    static readonly string assemblyVersion = Assembly.GetAssembly(typeof(Generator)).GetName().Version.ToString(3);
 
     internal readonly record struct DUMember(string Name, Accessibility Accessibility);
     internal readonly record struct DUToGenerate(string Name, string Namespace, EquatableArray<DUMember> Children, EquatableArray<string> GenericTypeNames, bool Serializable);

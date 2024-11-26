@@ -138,7 +138,7 @@ public static class TestHelper
             syntaxTrees: [syntaxTree],
             references: references);
 
-        var generator = new DiscriminatedUnionGenerator();
+        var generator = new Generator();
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Runtime.Serialization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -11,7 +12,7 @@ public class InvalidAccessibility : DiagnosticAnalyzer
         "DU2",
         "Invalid Accessibility",
         "A DU or one of its members is neither marked as public or internal",
-        "Discriminated Union",
+        "SharpUnion",
         DiagnosticSeverity.Error,
         true);
 
@@ -48,15 +49,16 @@ public class InvalidAccessibility : DiagnosticAnalyzer
         var recordMembers = symbol.GetTypeMembers();
         foreach (var member in recordMembers)
         {
+            var ignoreMember = false;
             foreach (var attribute in member.GetAttributes())
             {
                 if (attribute.AttributeClass?.IsSharpUnionIgnoreAttribute() == true)
                 {
-                    continue;
+                    ignoreMember = true;
                 }
             }
 
-            if (!HasValidAccessibilityModifier(member))
+            if (!ignoreMember && !HasValidAccessibilityModifier(member))
             {
                 context.ReportDiagnostic(Diagnostic.Create(Rule, member.Locations.FirstOrDefault()));
             }

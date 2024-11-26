@@ -12,7 +12,7 @@ public class SerializationOnGenericType : DiagnosticAnalyzer
         "DU4",
         "Serialization flag on Generic DU",
         "Serialization is not supported on generic DU types.",
-        "Discriminated Union",
+        "SharpUnion",
         DiagnosticSeverity.Error,
         true);
 

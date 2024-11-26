@@ -11,7 +11,7 @@ public class ChildWithGeneric : DiagnosticAnalyzer
         "DU1",
         "Child with Generic",
         "A DU member contains a generic. All generics should be defined on the parent type.",
-        "Discriminated Union",
+        "SharpUnion",
         DiagnosticSeverity.Error,
         true);
 
@@ -43,15 +43,16 @@ public class ChildWithGeneric : DiagnosticAnalyzer
         var recordMembers = symbol.GetTypeMembers();
         foreach (var member in recordMembers)
         {
+            var ignoreMember = false;
             foreach (var attribute in member.GetAttributes())
             {
                 if (attribute.AttributeClass?.IsSharpUnionIgnoreAttribute() == true)
                 {
-                    continue;
+                    ignoreMember = true;
                 }
             }
 
-            if (member.TypeArguments.Length > 0)
+            if (!ignoreMember && member.TypeArguments.Length > 0)
             {
                 context.ReportDiagnostic(Diagnostic.Create(Rule, member.Locations.FirstOrDefault()));
             }
