@@ -1,8 +1,8 @@
 ﻿using Verify = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<
-    DiscriminatedUnion.Generator.Analyzers.MismatchedAccessibility,
+    SharpUnion.Analyzers.MismatchedAccessibility,
     Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
-namespace DiscriminatedUnion.Generator.Tests;
+namespace SharpUnion.Tests;
 
 public class MismatchedAccessibilityTests
 {
@@ -15,19 +15,19 @@ namespace System.Runtime.CompilerServices
     internal static class IsExternalInit {{ }}
 }}
 
-namespace DiscriminatedUnion.Generator.Shared
+namespace SharpUnion.Shared
 {{
     [System.AttributeUsage(System.AttributeTargets.Class)]
-    public class DiscriminatedUnionAttribute : System.Attribute
+    public class SharpUnionAttribute : System.Attribute
     {{
     }}
 }}
 
 namespace ConsoleApp1
 {{
-    using DiscriminatedUnion.Generator.Shared;
+    using SharpUnion.Shared;
 
-    [DiscriminatedUnion]
+    [SharpUnion]
     public abstract partial record Result
     {{
         public partial record A(int Value);

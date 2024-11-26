@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DiscriminatedUnion.Generator" Version="1.0.0" />
+    <PackageReference Include="SharpUnion" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

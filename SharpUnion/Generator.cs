@@ -1,4 +1,4 @@
-﻿using DiscriminatedUnion.Generator.Shared;
+﻿using SharpUnion.Shared;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -6,12 +6,13 @@ using Microsoft.CodeAnalysis.Text;
 using System.Reflection;
 using System.Text;
 
-namespace DiscriminatedUnion.Generator;
+namespace SharpUnion;
 
 [Generator]
 public class DiscriminatedUnionGenerator : IIncrementalGenerator
 {
 
+    static readonly string assemblyName = Assembly.GetAssembly(typeof(DiscriminatedUnionGenerator)).GetName().Name;
     static readonly string assemblyVersion = Assembly.GetAssembly(typeof(DiscriminatedUnionGenerator)).GetName().Version.ToString(3);
 
     internal readonly record struct DUMember(string Name, Accessibility Accessibility);
@@ -20,7 +21,7 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var dusToGenerate = context.SyntaxProvider
-            .ForAttributeWithMetadataName("DiscriminatedUnion.Generator.Shared.DiscriminatedUnionAttribute",
+            .ForAttributeWithMetadataName("SharpUnion.Shared.SharpUnionAttribute",
             predicate: (node, _) => node is RecordDeclarationSyntax,
             transform: (ctx, _) => GetSemanticTargetForGeneration(ctx));
 
@@ -43,7 +44,7 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
                 }
 
                 var attributeContainingTypeSymbol = attributeSymbol.ContainingType;
-                if (attributeContainingTypeSymbol.IsDiscriminatedUnionAttribute())
+                if (attributeContainingTypeSymbol.IsSharpUnionAttribute())
                 {
                     return GetDUToGenerate(context.SemanticModel, recordDeclarationSyntax);
                 }
@@ -70,25 +71,29 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
         var members = new List<DUMember>(recordMembers.Length);
         foreach (var member in recordMembers)
         {
+            var ignoreMember = false;
             foreach (var attribute in member.GetAttributes())
             {
-                if (attribute.AttributeClass?.IsDiscriminatedUnionIgnoreAttribute() == true)
+                if (attribute.AttributeClass?.IsSharpUnionIgnoreAttribute() == true)
                 {
-                    continue;
+                    ignoreMember = true;
                 }
             }
 
-            members.Add(new(member.Name, member.DeclaredAccessibility));
+            if (!ignoreMember)
+            {
+                members.Add(new(member.Name, member.DeclaredAccessibility));
+            }
         }
 
         bool serializable = false;
         foreach (var attribute in recordSymbol.GetAttributes())
         {
-            if (attribute.AttributeClass?.IsDiscriminatedUnionAttribute() == true)
+            if (attribute.AttributeClass?.IsSharpUnionAttribute() == true)
             {
                 foreach (var arg in attribute.NamedArguments)
                 {
-                    if (arg.Key == nameof(DiscriminatedUnionAttribute.Serializable))
+                    if (arg.Key == nameof(SharpUnionAttribute.Serializable))
                     {
                         serializable = arg.Value.Value as bool? ?? false;
                     }
@@ -109,7 +114,7 @@ public class DiscriminatedUnionGenerator : IIncrementalGenerator
         if (duToGenerate is { } value)
         {
             string result = GenerateExtensionClass(value);
-            context.AddSource($"DiscriminatedUnion.{value.Name}.g.cs", SourceText.From(result, Encoding.UTF8));
+            context.AddSource($"SharpUnion.{value.Name}.g.cs", SourceText.From(result, Encoding.UTF8));
         }
     }
 
@@ -122,7 +127,7 @@ namespace {duToGenerate.Namespace}
     {GetJsonConverterAttribute(duToGenerate)}
     abstract partial record {GetTypeMemberName(duToGenerate)}
     {{
-        [System.CodeDom.Compiler.GeneratedCode(""DiscriminatedUnion.Generator"", ""{assemblyVersion}"")]
+        [System.CodeDom.Compiler.GeneratedCode(""{assemblyName}"", ""{assemblyVersion}"")]
         private {duToGenerate.Name}() {{ }}");
 
         foreach (var child in duToGenerate.Children)
@@ -131,7 +136,7 @@ namespace {duToGenerate.Namespace}
 
         {GetAccessibility(child.Accessibility)} sealed partial record {child.Name} : {GetTypeMemberName(duToGenerate)};
 
-        [System.CodeDom.Compiler.GeneratedCode(""DiscriminatedUnion.Generator"", ""{assemblyVersion}"")]
+        [System.CodeDom.Compiler.GeneratedCode(""SharpUnion"", ""{assemblyVersion}"")]
         {GetAccessibility(child.Accessibility)} bool Is{child.Name} => this is {child.Name};");
         }
 
@@ -166,8 +171,8 @@ namespace {duToGenerate.Namespace}
         static string GetJsonConverter(DUToGenerate member) =>
             @$"
 
-        [DiscriminatedUnion.Generator.Shared.DiscriminatedUnionIgnore]
-        [System.CodeDom.Compiler.GeneratedCode(""DiscriminatedUnion.Generator"", ""{assemblyVersion}"")]
+        [SharpUnion.Shared.SharpUnionIgnore]
+        [System.CodeDom.Compiler.GeneratedCode(""{assemblyName}"", ""{assemblyVersion}"")]
         private sealed class {member.Name}Converter : System.Text.Json.Serialization.JsonConverter<{member.Name}>
         {{
             public override {member.Name}? Read(ref System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options)

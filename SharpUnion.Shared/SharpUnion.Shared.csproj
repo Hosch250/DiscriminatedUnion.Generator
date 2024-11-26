@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <LangVersion>Latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>SharpUnion.Shared</PackageId>
+        <Version>1.0.0</Version>
+        <Description>The shared types used with the SharpUnion package.</Description>
+        <Authors>Hosch250</Authors>
+        <Copyright>Copyright (c) Hosch250 2024</Copyright>
+        <RepositoryUrl>https://github.com/Hosch250/SharpUnion</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <Tags>Discriminated;Union;DU</Tags>
+    </PropertyGroup>
+
+</Project>

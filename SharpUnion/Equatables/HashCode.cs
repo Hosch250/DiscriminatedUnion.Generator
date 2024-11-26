@@ -3,7 +3,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace DiscriminatedUnion.Generator;
+namespace SharpUnion;
 
 /// <summary>
 /// Polyfill for .NET 6 HashCode  

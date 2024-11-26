@@ -1,7 +1,7 @@
-﻿using DiscriminatedUnion.Generator.Shared;
+﻿using SharpUnion.Shared;
 using System.Text.Json;
 
-namespace DiscriminatedUnion.Generator.Examples;
+namespace SharpUnion.Examples;
 
 class Program
 {
@@ -18,7 +18,7 @@ class Program
     }
 }
 
-[DiscriminatedUnion(Serializable = true)]
+[SharpUnion(Serializable = true)]
 public abstract partial record Shape
 {
     public partial record Circle(float Radius);
@@ -42,14 +42,14 @@ public abstract partial record Shape
         };
 }
 
-[DiscriminatedUnion(Serializable = true)]
+[SharpUnion(Serializable = true)]
 public abstract partial record Tree
 {
     public partial record Node(Tree? Right = null, Tree? Left = null);
     public partial record Leaf(string Name);
 }
 
-[DiscriminatedUnion]
+[SharpUnion]
 public abstract partial record Result<T, T1>
 {
     public partial record OK(T Value);

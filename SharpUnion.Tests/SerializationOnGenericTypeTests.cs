@@ -1,8 +1,8 @@
 ﻿using Verify = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<
-    DiscriminatedUnion.Generator.Analyzers.SerializationOnGenericType,
+    SharpUnion.Analyzers.SerializationOnGenericType,
     Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
-namespace DiscriminatedUnion.Generator.Tests;
+namespace SharpUnion.Tests;
 
 public class SerializationOnGenericTypeTests
 {
@@ -15,10 +15,10 @@ namespace System.Runtime.CompilerServices
     internal static class IsExternalInit {{ }}
 }}
 
-namespace DiscriminatedUnion.Generator.Shared
+namespace SharpUnion.Shared
 {{
     [System.AttributeUsage(System.AttributeTargets.Class)]
-    public class DiscriminatedUnionAttribute : System.Attribute
+    public class SharpUnionAttribute : System.Attribute
     {{
         public bool Serializable {{ get; set; }}
     }}
@@ -26,9 +26,9 @@ namespace DiscriminatedUnion.Generator.Shared
 
 namespace ConsoleApp1
 {{
-    using DiscriminatedUnion.Generator.Shared;
+    using SharpUnion.Shared;
 
-    [DiscriminatedUnion(Serializable = true)]
+    [SharpUnion(Serializable = true)]
     public abstract partial record {{|DU4:Result|}}<T>
     {{
         public partial record A(T Value);

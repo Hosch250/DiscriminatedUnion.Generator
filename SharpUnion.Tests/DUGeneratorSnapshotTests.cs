@@ -2,7 +2,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace DiscriminatedUnion.Generator.Tests;
+namespace SharpUnion.Tests;
 
 public class DUGeneratorSnapshotTests
 {
@@ -10,11 +10,11 @@ public class DUGeneratorSnapshotTests
     public Task GeneratesDUCorrectly()
     {
         var source = @"
-using DiscriminatedUnion.Generator.Shared;
+using SharpUnion.Shared;
 
 namespace Project1;
 
-[DiscriminatedUnion]
+[SharpUnion]
 abstract partial record Shape
 {
     internal partial record Circle(float Radius);
@@ -30,11 +30,11 @@ abstract partial record Shape
     public Task GeneratesDUCorrectly_IncludesNonPartialField()
     {
         var source = @"
-using DiscriminatedUnion.Generator.Shared;
+using SharpUnion.Shared;
 
 namespace Project1;
 
-[DiscriminatedUnion]
+[SharpUnion]
 abstract partial record Shape
 {
     internal partial record Circle(float Radius);
@@ -50,11 +50,11 @@ abstract partial record Shape
     public Task GeneratesDUCorrectly_WithGenerics()
     {
         var source = @"
-using DiscriminatedUnion.Generator.Shared;
+using SharpUnion.Shared;
 
 namespace Project1;
 
-[DiscriminatedUnion]
+[SharpUnion]
 abstract partial record Result<TResult, TException>
 {
     internal partial record OK(TResult Value);
@@ -68,16 +68,38 @@ abstract partial record Result<TResult, TException>
     public Task GeneratesDUCorrectly_Serializable()
     {
         var source = @"
-using DiscriminatedUnion.Generator.Shared;
+using SharpUnion.Shared;
 
 namespace Project1;
 
-[DiscriminatedUnion(Serializable = true)]
+[SharpUnion(Serializable = true)]
 abstract partial record Shape
 {
     internal partial record Circle(float Radius);
     internal partial record EquilateralTriangle(double SideLength);
     internal partial record Square(double SideLength);
+    internal partial record Rectangle(double Height, double Width);
+}";
+
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task GeneratesDUCorrectly_IgnoresTypeWithIgnoreAttribute()
+    {
+        var source = @"
+using SharpUnion.Shared;
+
+namespace Project1;
+
+[SharpUnion]
+abstract partial record Shape
+{
+    internal partial record Circle(float Radius);
+    internal partial record EquilateralTriangle(double SideLength);
+    internal partial record Square(double SideLength);
+
+    [SharpUnionIgnore]
     internal partial record Rectangle(double Height, double Width);
 }";
 
@@ -107,7 +129,7 @@ public static class TestHelper
         .Select(_ => MetadataReference.CreateFromFile(_.Location))
         .Concat(
         [
-            MetadataReference.CreateFromFile(typeof(Shared.DiscriminatedUnionAttribute).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(Shared.SharpUnionAttribute).Assembly.Location),
         ])
         .ToList();
 

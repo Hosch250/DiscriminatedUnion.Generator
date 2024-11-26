@@ -1,14 +1,14 @@
-# DiscriminatedUnion.Generator
+# SharpUnion
 Bringing the power of F# discriminated unions to C#.
 
 ## Use
 Write discriminated unions with nested records:
 ```cs
-using DiscriminatedUnion.Generator.Shared;
+using SharpUnion.Shared;
 
 namespace MyApp;
 
-[DiscriminatedUnion]
+[SharpUnion]
 public abstract partial record Shape
 {
     public partial record Circle(float Radius);
@@ -29,7 +29,7 @@ public abstract partial record Shape
         };
 }
 
-[DiscriminatedUnion]
+[SharpUnion]
 internal abstract partial record Result<T>
 {
     internal partial record OK(T Value);
@@ -80,7 +80,7 @@ Logic:
 - Implement `Is*` properties. *Favor pattern matching when using, though.*
 
 ### Serialization
-Set the `Serializable` property on your attribute: `[DiscriminatedUnion(Serializable = true)]`. This will add support for System.Text.Json serialization. When this flag is set, the following code will work:
+Set the `Serializable` property on your attribute: `[SharpUnion(Serializable = true)]`. This will add support for System.Text.Json serialization. When this flag is set, the following code will work:
 ```cs
 var type = new Shape.Circle(5f);
 var json = JsonSerializer.Serialize(type);

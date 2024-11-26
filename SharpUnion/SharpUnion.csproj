@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<LangVersion>Latest</LangVersion>
+		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+	</PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>SharpUnion</PackageId>
+        <Version>1.0.0</Version>
+        <Description>The core SharpUnion package.</Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <Authors>Hosch250</Authors>
+        <Copyright>Copyright (c) Hosch250 2024</Copyright>
+        <RepositoryUrl>https://github.com/Hosch250/SharpUnion</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <Tags>Discriminated;Union;DU</Tags>
+    </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" PrivateAssets="all" />
+        <PackageReference Include="PolySharp" Version="1.14.1" />
+        <PackageReference Include="SharpUnion.Shared" Version="1.0.0"></PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\SharpUnion.Shared.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\SharpUnion.Shared.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="false" />
+
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+</Project>

@@ -1,8 +1,8 @@
 ﻿using Verify = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<
-    DiscriminatedUnion.Generator.Analyzers.InvalidAccessibility,
+    SharpUnion.Analyzers.InvalidAccessibility,
     Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
-namespace DiscriminatedUnion.Generator.Tests;
+namespace SharpUnion.Tests;
 
 public class InvalidAccessibilityTests
 {
@@ -17,19 +17,19 @@ namespace System.Runtime.CompilerServices
     internal static class IsExternalInit {{ }}
 }}
 
-namespace DiscriminatedUnion.Generator.Shared
+namespace SharpUnion.Shared
 {{
     [System.AttributeUsage(System.AttributeTargets.Class)]
-    public class DiscriminatedUnionAttribute : System.Attribute
+    public class SharpUnionAttribute : System.Attribute
     {{
     }}
 }}
 
 namespace ConsoleApp1
 {{
-    using DiscriminatedUnion.Generator.Shared;
+    using SharpUnion.Shared;
 
-    [DiscriminatedUnion]
+    [SharpUnion]
     abstract partial record Result
     {{
         internal partial record A(int Value);

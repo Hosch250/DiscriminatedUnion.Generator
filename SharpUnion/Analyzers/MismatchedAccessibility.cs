@@ -2,15 +2,15 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace DiscriminatedUnion.Generator.Analyzers;
+namespace SharpUnion.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class ChildWithGeneric : DiagnosticAnalyzer
+public class MismatchedAccessibility : DiagnosticAnalyzer
 {
     public static DiagnosticDescriptor Rule => new(
-        "DU1",
-        "Child with Generic",
-        "A DU member contains a generic. All generics should be defined on the parent type.",
+        "DU3",
+        "Mismatched Accessibility",
+        "A DU member is marked with a different accessibility modifier than the parent",
         "Discriminated Union",
         DiagnosticSeverity.Error,
         true);
@@ -28,7 +28,7 @@ public class ChildWithGeneric : DiagnosticAnalyzer
             {
                 foreach (var attribute in symbol.GetAttributes())
                 {
-                    if (attribute.AttributeClass?.IsDiscriminatedUnionAttribute() == true)
+                    if (attribute.AttributeClass?.IsSharpUnionAttribute() == true)
                     {
                         context.RegisterSymbolEndAction(context => Analyze(context, symbol));
                         return;
@@ -40,18 +40,20 @@ public class ChildWithGeneric : DiagnosticAnalyzer
 
     private static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol symbol)
     {
+        var expectedAccessibility = symbol.DeclaredAccessibility;
+
         var recordMembers = symbol.GetTypeMembers();
         foreach (var member in recordMembers)
         {
             foreach (var attribute in member.GetAttributes())
             {
-                if (attribute.AttributeClass?.IsDiscriminatedUnionIgnoreAttribute() == true)
+                if (attribute.AttributeClass?.IsSharpUnionIgnoreAttribute() == true)
                 {
                     continue;
                 }
             }
 
-            if (member.TypeArguments.Length > 0)
+            if (member.DeclaredAccessibility != expectedAccessibility)
             {
                 context.ReportDiagnostic(Diagnostic.Create(Rule, member.Locations.FirstOrDefault()));
             }

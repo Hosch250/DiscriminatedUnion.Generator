@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DiscriminatedUnion.Generator\DiscriminatedUnion.Generator.csproj" />
+		<ProjectReference Include="..\SharpUnion\SharpUnion.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -3,7 +3,7 @@
 using System.Collections;
 using System.Collections.Immutable;
 
-namespace DiscriminatedUnion.Generator;
+namespace SharpUnion;
 
 /// <summary>
 /// An immutable, equatable array. This is equivalent to <see cref="Array{T}"/> but with value equality support.

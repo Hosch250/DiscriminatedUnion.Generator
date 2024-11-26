@@ -1,11 +1,9 @@
 ﻿using System.Collections.Immutable;
-using DiscriminatedUnion.Generator.Shared;
-using System.Runtime.Serialization;
+using SharpUnion.Shared;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static DiscriminatedUnion.Generator.DiscriminatedUnionGenerator;
 
-namespace DiscriminatedUnion.Generator.Analyzers;
+namespace SharpUnion.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class SerializationOnGenericType : DiagnosticAnalyzer
@@ -31,11 +29,11 @@ public class SerializationOnGenericType : DiagnosticAnalyzer
             {
                 foreach (var attribute in symbol.GetAttributes())
                 {
-                    if (attribute.AttributeClass?.IsDiscriminatedUnionAttribute() == true)
+                    if (attribute.AttributeClass?.IsSharpUnionAttribute() == true)
                     {
                         foreach (var arg in attribute.NamedArguments)
                         {
-                            if (arg.Key == nameof(DiscriminatedUnionAttribute.Serializable))
+                            if (arg.Key == nameof(SharpUnionAttribute.Serializable))
                             {
                                 if (arg.Value.Value as bool? ?? false)
                                 {

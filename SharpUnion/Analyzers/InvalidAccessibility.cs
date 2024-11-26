@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace DiscriminatedUnion.Generator.Analyzers;
+namespace SharpUnion.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class InvalidAccessibility : DiagnosticAnalyzer
@@ -28,7 +28,7 @@ public class InvalidAccessibility : DiagnosticAnalyzer
             {
                 foreach (var attribute in symbol.GetAttributes())
                 {
-                    if (attribute.AttributeClass?.IsDiscriminatedUnionAttribute() == true)
+                    if (attribute.AttributeClass?.IsSharpUnionAttribute() == true)
                     {
                         context.RegisterSymbolEndAction(context => Analyze(context, symbol));
                         return;
@@ -50,7 +50,7 @@ public class InvalidAccessibility : DiagnosticAnalyzer
         {
             foreach (var attribute in member.GetAttributes())
             {
-                if (attribute.AttributeClass?.IsDiscriminatedUnionIgnoreAttribute() == true)
+                if (attribute.AttributeClass?.IsSharpUnionIgnoreAttribute() == true)
                 {
                     continue;
                 }

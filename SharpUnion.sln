@@ -3,18 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscriminatedUnion.Generator.Examples", "DiscriminatedUnion.Generator.Examples\DiscriminatedUnion.Generator.Examples.csproj", "{D2C1BCEF-2A54-429E-A386-2E102D381927}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpUnion.Examples", "SharpUnion.Examples\SharpUnion.Examples.csproj", "{D2C1BCEF-2A54-429E-A386-2E102D381927}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscriminatedUnion.Generator", "DiscriminatedUnion.Generator\DiscriminatedUnion.Generator.csproj", "{F14E331A-C2B9-4D10-B8BC-B16C09554B0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpUnion", "SharpUnion\SharpUnion.csproj", "{F14E331A-C2B9-4D10-B8BC-B16C09554B0D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscriminatedUnion.Generator.Tests", "DiscriminatedUnion.Generator.Tests\DiscriminatedUnion.Generator.Tests.csproj", "{FDFF2F7D-BC88-4C76-92ED-5A78DD456992}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpUnion.Tests", "SharpUnion.Tests\SharpUnion.Tests.csproj", "{FDFF2F7D-BC88-4C76-92ED-5A78DD456992}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B68CF4A1-FE9A-4FD6-A570-D8812F6EB559}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscriminatedUnion.Generator.Shared", "DiscriminatedUnion.Generator.Shared\DiscriminatedUnion.Generator.Shared.csproj", "{2806A013-7A5F-414E-9654-1B78274A5D05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpUnion.Shared", "SharpUnion.Shared\SharpUnion.Shared.csproj", "{2806A013-7A5F-414E-9654-1B78274A5D05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
