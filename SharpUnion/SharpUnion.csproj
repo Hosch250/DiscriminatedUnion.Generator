@@ -36,4 +36,8 @@
 
         <None Include="..\README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\SharpUnion.Shared\SharpUnion.Shared.csproj" />
+	</ItemGroup>
 </Project>
