@@ -13,7 +13,7 @@ union Shape =
 | Rectangle(float Width, float Length)
 | Circle(float Radius);";
 
-        var output = ParseToCSharpMapper.Map(Parse(input), "My.Namespace", Shared.Accessibility.Public);
+        var (name, output) = ParseToCSharpMapper.Map(Parse(input), "My.Namespace", Shared.Accessibility.Public);
 
         var expected = @"
 namespace My.Namespace
@@ -33,6 +33,7 @@ namespace My.Namespace
     }
 }";
 
+        Assert.Equal("Shape", name);
         Assert.Equal(expected, output);
     }
 
@@ -44,7 +45,7 @@ union Result<TResult, TException> =
 | OK(TResult Value)
 | Error(TException Message);";
 
-        var output = ParseToCSharpMapper.Map(Parse(input), "My.Namespace", Shared.Accessibility.Internal);
+        var (name, output) = ParseToCSharpMapper.Map(Parse(input), "My.Namespace", Shared.Accessibility.Internal);
 
         var expected = @"
 namespace My.Namespace
@@ -64,6 +65,7 @@ namespace My.Namespace
     }
 }";
 
+        Assert.Equal("Result", name);
         Assert.Equal(expected, output);
     }
 
@@ -81,35 +83,3 @@ namespace My.Namespace
         return tree;
     }
 }
-
-
-
-//namespace Project1
-//{
-
-//    abstract partial record Shape
-//    {
-//        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "2.0.0")]
-//        private Shape() { }
-
-//        internal sealed partial record Circle : Shape;
-
-//        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "2.0.0")]
-//        internal bool IsCircle => this is Circle;
-
-//        internal sealed partial record EquilateralTriangle : Shape;
-
-//        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "2.0.0")]
-//        internal bool IsEquilateralTriangle => this is EquilateralTriangle;
-
-//        internal sealed partial record Square : Shape;
-
-//        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "2.0.0")]
-//        internal bool IsSquare => this is Square;
-
-//        internal sealed partial record Rectangle : Shape;
-
-//        [System.CodeDom.Compiler.GeneratedCode("SharpUnion", "2.0.0")]
-//        internal bool IsRectangle => this is Rectangle;
-//    }
-//}

@@ -19,6 +19,21 @@ internal static class AttributeHelper
             }
         };
 
+    internal static bool IsSharpUnionModuleAttribute(this ITypeSymbol typeSymbol) =>
+        typeSymbol is INamedTypeSymbol
+        {
+            MetadataName: "SharpUnionModuleAttribute",
+            ContainingNamespace:
+            {
+                Name: "Shared",
+                ContainingNamespace:
+                {
+                    Name: "SharpUnion",
+                    ContainingNamespace.IsGlobalNamespace: true
+                }
+            }
+        };
+
     internal static bool IsSharpUnionIgnoreAttribute(this ITypeSymbol typeSymbol) =>
         typeSymbol is INamedTypeSymbol
         {

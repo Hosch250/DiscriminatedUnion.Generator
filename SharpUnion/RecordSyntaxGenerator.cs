@@ -9,7 +9,7 @@ using Accessibility = Microsoft.CodeAnalysis.Accessibility;
 namespace SharpUnion;
 
 [Generator]
-public class Generator : IIncrementalGenerator
+public class RecordSyntaxGenerator : IIncrementalGenerator
 {
     private readonly record struct DUMember(string Name, Accessibility Accessibility);
     private readonly record struct DUToGenerate(string Name, string Namespace, EquatableArray<DUMember> Children, EquatableArray<string> GenericTypeNames, bool Serializable);

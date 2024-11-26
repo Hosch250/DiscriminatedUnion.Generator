@@ -6,7 +6,9 @@ namespace SharpUnion;
 
 public static class ParseToCSharpMapper
 {
-    public static string Map(UnionParser.UnionStmtContext unionStmt, string ns, Accessibility accessibility)
+    public record MapResult(string TypeName, string Output);
+
+    public static MapResult Map(UnionParser.UnionStmtContext unionStmt, string ns, Accessibility accessibility)
     {
         var sb = new StringBuilder();
         sb.Append($@"
@@ -28,7 +30,7 @@ namespace {ns}
     }}
 }}");
 
-        return sb.ToString();
+        return new MapResult(Identifier(unionStmt.type()), sb.ToString());
     }
 
     private static string Identifier(UnionParser.TypeContext type) => type switch

@@ -2,7 +2,12 @@
 
 [module:SharpUnionModule(@"union Tree
 | Node(params Tree?[] trees)
-| Leaf(string Name)", Serializable = true, Accessibility = Accessibility.Public)]
+| Leaf(string Name);", Serializable = true, Accessibility = Accessibility.Public)]
+
+
+[module: SharpUnionModule(@"union Tree1
+| Node(params Tree?[] trees)
+| Leaf(string Name);")]
 
 namespace SharpUnion.Examples;
 

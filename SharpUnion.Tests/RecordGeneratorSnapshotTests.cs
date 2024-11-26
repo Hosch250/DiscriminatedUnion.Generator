@@ -1,10 +1,9 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
-using System.Runtime.CompilerServices;
 
 namespace SharpUnion.Tests;
 
-public class DUGeneratorSnapshotTests
+public class RecordGeneratorSnapshotTests
 {
     [Fact]
     public Task GeneratesDUCorrectly()
@@ -23,7 +22,7 @@ abstract partial record Shape
     internal partial record Rectangle(double Height, double Width);
 }";
 
-        return TestHelper.Verify(source);
+        return Verify(source);
     }
 
     [Fact]
@@ -43,7 +42,7 @@ abstract partial record Shape
     internal record Rectangle(double Height, double Width);
 }";
 
-        return TestHelper.Verify(source);
+        return Verify(source);
     }
 
     [Fact]
@@ -61,7 +60,7 @@ abstract partial record Result<TResult, TException>
     internal partial record Error(TException Message);
 }";
 
-        return TestHelper.Verify(source);
+        return Verify(source);
     }
 
     [Fact]
@@ -81,7 +80,7 @@ abstract partial record Shape
     internal partial record Rectangle(double Height, double Width);
 }";
 
-        return TestHelper.Verify(source);
+        return Verify(source);
     }
 
     [Fact]
@@ -103,24 +102,11 @@ abstract partial record Shape
     internal partial record Rectangle(double Height, double Width);
 }";
 
-        return TestHelper.Verify(source);
+        return Verify(source);
     }
-}
 
-public static class ModuleInitializer
-{
-    [ModuleInitializer]
-    public static void Init()
-    {
-        VerifySourceGenerators.Initialize();
-    }
-}
-
-public static class TestHelper
-{
     private static readonly string dotNetAssemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
-
-    public static Task Verify(string source)
+    internal static Task Verify(string source)
     {
         SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source);
 
@@ -138,12 +124,12 @@ public static class TestHelper
             syntaxTrees: [syntaxTree],
             references: references);
 
-        var generator = new Generator();
+        var generator = new RecordSyntaxGenerator();
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
 
         driver = driver.RunGenerators(compilation);
 
-        return Verifier.Verify(driver).UseDirectory("Snapshots");
+        return Verifier.Verify(driver).UseDirectory("RecordSnapshots");
     }
 }

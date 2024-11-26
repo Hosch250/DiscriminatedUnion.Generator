@@ -12,10 +12,12 @@ public class SharpUnionAttribute : Attribute
 /// <summary>
 /// Create a discriminated union with string syntax
 /// </summary>
-[AttributeUsage(AttributeTargets.Module)]
-public class SharpUnionModuleAttribute(string definition) : Attribute
+[AttributeUsage(AttributeTargets.Module, AllowMultiple = true)]
+public class SharpUnionModuleAttribute(string nameSpace, string definition) : Attribute
 {
+    public string NameSpace { get; } = nameSpace;
     public string Definition { get; } = definition;
+
     public bool Serializable { get; set; } = false;
     public Accessibility Accessibility { get; set; } = Accessibility.Public;
 }
@@ -27,16 +29,16 @@ public class SharpUnionModuleAttribute(string definition) : Attribute
 public class SharpUnionIgnoreAttribute : Attribute { }
 
 /// <summary>
-/// Enum of valid accessibility modifiers
+/// Enum of valid accessibility modifiers; defaults to Internal
 /// </summary>
 public enum Accessibility
 {
     /// <summary>
+    /// Marks a discriminated union and its member types as internal
+    /// </summary>
+    Internal,
+    /// <summary>
     /// Marks a discriminated union and its member types as public
     /// </summary>
     Public,
-    /// <summary>
-    /// Marks a discriminated union and its member types as internal
-    /// </summary>
-    Internal
 }
