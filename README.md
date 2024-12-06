@@ -6,8 +6,18 @@ Write discriminated unions with nested records:
 ```cs
 using SharpUnion.Shared;
 
+// string syntax
+[module: SharpUnionModule(
+    "MyApp",
+    @"union Tree =
+| Node(params Tree?[] trees)
+| Leaf(string Name);",
+    Serializable = true,
+    Accessibility = Accessibility.Public)]
+
 namespace MyApp;
 
+// record syntax
 [SharpUnion]
 public abstract partial record Shape
 {
