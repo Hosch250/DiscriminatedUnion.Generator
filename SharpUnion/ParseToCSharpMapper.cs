@@ -1,4 +1,6 @@
-﻿using SharpUnion.Parser;
+﻿using Antlr4.Runtime.Atn;
+using Antlr4.Runtime;
+using SharpUnion.Parser;
 using SharpUnion.Shared;
 using System.Text;
 
@@ -8,8 +10,24 @@ public static class ParseToCSharpMapper
 {
     public record MapResult(string TypeName, string Output);
 
-    public static MapResult Map(UnionParser.UnionStmtContext unionStmt, string ns, Accessibility accessibility)
+    public static UnionParser.UnionStmtContext Parse(string input)
     {
+        var stream = new AntlrInputStream(input);
+        var lexer = new UnionLexer(stream);
+        var tokens = new CommonTokenStream(lexer);
+        var parser = new UnionParser(tokens)
+        {
+            ErrorHandler = new BailErrorStrategy()
+        };
+        parser.Interpreter.PredictionMode = PredictionMode.Sll;
+        var tree = parser.unionStmt();
+        return tree;
+    }
+
+    public static MapResult Map(string ns, string declaration, Accessibility accessibility)
+    {
+        var unionStmt = Parse(declaration);
+
         var sb = new StringBuilder();
         sb.Append($@"
 namespace {ns}

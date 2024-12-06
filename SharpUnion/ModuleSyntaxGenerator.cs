@@ -4,9 +4,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Accessibility = SharpUnion.Shared.Accessibility;
 using Microsoft.CodeAnalysis.Text;
 using System.Text;
-using SharpUnion.Parser;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime;
 
 namespace SharpUnion;
 
@@ -28,10 +25,7 @@ public class ModuleSyntaxGenerator : IIncrementalGenerator
 
     private static EquatableArray<DUToGenerate>? GetSemanticTargetForGeneration(GeneratorAttributeSyntaxContext context)
     {
-        var node = (CompilationUnitSyntax)context.TargetNode;
-
-        var sourceSymbol = context.TargetSymbol as ISourceAssemblySymbol;
-        if (sourceSymbol is null)
+        if (context.TargetSymbol is not ISourceAssemblySymbol sourceSymbol)
         {
             return null;
         }
@@ -101,38 +95,27 @@ public class ModuleSyntaxGenerator : IIncrementalGenerator
         {
             foreach (var du in value)
             {
-                var parseResult = Parse(du.Definition);
-                var (typeName, output) = ParseToCSharpMapper.Map(parseResult, du.Namespace, du.Accessibility);
-
-                if (du.Serializable)
+                try
                 {
-                    output = output
-                        .Replace("@@UnionAttributes@@", $"\n    [System.Text.Json.Serialization.JsonConverter(typeof({typeName}Converter))]")
-                        .Replace("@@UnionMembers@@", GetJsonConverter(typeName));
-                }
-                else
-                {
-                    output = output
-                        .Replace("@@UnionAttributes@@", string.Empty)
-                        .Replace("@@UnionMembers@@", string.Empty);
-                }
+                    var (typeName, output) = ParseToCSharpMapper.Map(du.Namespace, du.Definition, du.Accessibility);
 
-                context.AddSource($"SharpUnion.{typeName}.g.cs", SourceText.From(output, Encoding.UTF8));
+                    if (du.Serializable)
+                    {
+                        output = output
+                            .Replace("@@UnionAttributes@@", $"\n    [System.Text.Json.Serialization.JsonConverter(typeof({typeName}Converter))]")
+                            .Replace("@@UnionMembers@@", GetJsonConverter(typeName));
+                    }
+                    else
+                    {
+                        output = output
+                            .Replace("@@UnionAttributes@@", string.Empty)
+                            .Replace("@@UnionMembers@@", string.Empty);
+                    }
+
+                    context.AddSource($"SharpUnion.{typeName}.g.cs", SourceText.From(output, Encoding.UTF8));
+                }
+                catch { }
             }
-        }
-
-        static UnionParser.UnionStmtContext Parse(string input)
-        {
-            var stream = new AntlrInputStream(input);
-            var lexer = new UnionLexer(stream);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new UnionParser(tokens)
-            {
-                ErrorHandler = new BailErrorStrategy()
-            };
-            parser.Interpreter.PredictionMode = PredictionMode.Sll;
-            var tree = parser.unionStmt();
-            return tree;
         }
 
         static string GetJsonConverter(string typeName) =>

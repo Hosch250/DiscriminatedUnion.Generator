@@ -7,6 +7,7 @@
 		<Nullable>enable</Nullable>
 		<LangVersion>Latest</LangVersion>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
     <PropertyGroup>
@@ -27,22 +28,25 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-        <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
+        <PackageReference Include="Antlr4.Runtime" Version="4.6.6" PrivateAssets="all" GeneratePathProperty="true" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" PrivateAssets="all" />
         <PackageReference Include="PolySharp" Version="1.14.1" />
-        <PackageReference Include="SharpUnion.Shared" Version="2.0.0"></PackageReference>
+        <PackageReference Include="SharpUnion.Shared" Version="2.0.0" PrivateAssets="all" GeneratePathProperty="true" />
 	</ItemGroup>
 
 	<ItemGroup>
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpUnion.Shared.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpUnion.Shared.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="false" />
+
+        <None Include="$(PkgSharpUnion_Shared)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(PkgSharpUnion_Shared)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="false" />
+
+        <None Include="$(PkgAntlr4_Runtime)\lib\netstandard1.1\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 
         <None Include="..\README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<!--<ItemGroup>
 	  <ProjectReference Include="..\SharpUnion.Shared\SharpUnion.Shared.csproj" />
-	</ItemGroup>
+	</ItemGroup>-->
 </Project>

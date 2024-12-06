@@ -27,10 +27,12 @@
 		<PackageReference Include="Verify.SourceGenerators" Version="2.5.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
 
+        <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\SharpUnion\SharpUnion.csproj" />
+        <ProjectReference Include="..\SharpUnion.Shared\SharpUnion.Shared.csproj" />
+        <ProjectReference Include="..\SharpUnion\SharpUnion.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

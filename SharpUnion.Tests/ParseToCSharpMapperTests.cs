@@ -13,7 +13,7 @@ union Shape =
 | Rectangle(float Width, float Length)
 | Circle(float Radius);";
 
-        var (name, output) = ParseToCSharpMapper.Map(Parse(input), "My.Namespace", Shared.Accessibility.Public);
+        var (name, output) = ParseToCSharpMapper.Map("My.Namespace", input, Shared.Accessibility.Public);
 
         var expected = @"
 namespace My.Namespace
@@ -43,7 +43,7 @@ union Result<TResult, TException> =
 | OK(TResult Value)
 | Error(TException Message);";
 
-        var (name, output) = ParseToCSharpMapper.Map(Parse(input), "My.Namespace", Shared.Accessibility.Internal);
+        var (name, output) = ParseToCSharpMapper.Map("My.Namespace", input, Shared.Accessibility.Internal);
 
         var expected = @"
 namespace My.Namespace
