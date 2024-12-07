@@ -28,29 +28,10 @@ public class RecordSyntaxGenerator : IIncrementalGenerator
     private static DUToGenerate? GetSemanticTargetForGeneration(GeneratorAttributeSyntaxContext context)
     {
         var recordDeclarationSyntax = (RecordDeclarationSyntax)context.TargetNode;
-
-        foreach (var attributeListSyntax in recordDeclarationSyntax.AttributeLists)
-        {
-            foreach (var attributeSyntax in attributeListSyntax.Attributes)
-            {
-                if (context.SemanticModel.GetSymbolInfo(attributeSyntax).Symbol is not IMethodSymbol attributeSymbol)
-                {
-                    // weird, we couldn't get the symbol, ignore it
-                    continue;
-                }
-
-                var attributeContainingTypeSymbol = attributeSymbol.ContainingType;
-                if (attributeContainingTypeSymbol.IsSharpUnionAttribute())
-                {
-                    return GetDUToGenerate(context.SemanticModel, recordDeclarationSyntax);
-                }
-            }
-        }
-
-        return null;
+        return GetDUToGenerate(context.SemanticModel, recordDeclarationSyntax, context.Attributes[0]);
     }
 
-    private static DUToGenerate? GetDUToGenerate(SemanticModel semanticModel, RecordDeclarationSyntax recordDeclarationSyntax)
+    private static DUToGenerate? GetDUToGenerate(SemanticModel semanticModel, RecordDeclarationSyntax recordDeclarationSyntax, AttributeData attributeData)
     {
         if (semanticModel.GetDeclaredSymbol(recordDeclarationSyntax) is not INamedTypeSymbol recordSymbol)
         {
@@ -83,17 +64,11 @@ public class RecordSyntaxGenerator : IIncrementalGenerator
         }
 
         bool serializable = false;
-        foreach (var attribute in recordSymbol.GetAttributes())
+        foreach (var arg in attributeData.NamedArguments)
         {
-            if (attribute.AttributeClass?.IsSharpUnionAttribute() == true)
+            if (arg.Key == nameof(SharpUnionAttribute.Serializable))
             {
-                foreach (var arg in attribute.NamedArguments)
-                {
-                    if (arg.Key == nameof(SharpUnionAttribute.Serializable))
-                    {
-                        serializable = arg.Value.Value as bool? ?? false;
-                    }
-                }
+                serializable = arg.Value.Value as bool? ?? false;
             }
         }
 
@@ -138,7 +113,7 @@ namespace {duToGenerate.Namespace}
 
         if (duToGenerate.Serializable)
         {
-            sb.Append(GetJsonConverter(duToGenerate));
+            sb.Append(DeserializationHelper.GetJsonConverter(duToGenerate.Name));
         }
 
         sb.Append($"\n    }}\n}}");
@@ -163,55 +138,5 @@ namespace {duToGenerate.Namespace}
 
         static string GetJsonConverterAttribute(DUToGenerate member) =>
             member.Serializable ? $"[System.Text.Json.Serialization.JsonConverter(typeof({member.Name}Converter))]" : "";
-
-        static string GetJsonConverter(DUToGenerate member) =>
-            $@"
-
-        [SharpUnion.Shared.SharpUnionIgnore]
-        [System.CodeDom.Compiler.GeneratedCode(""{AssemblyMetadata.AssemblyName}"", ""{AssemblyMetadata.AssemblyVersion}"")]
-        private sealed class {member.Name}Converter : System.Text.Json.Serialization.JsonConverter<{member.Name}>
-        {{
-            public override {member.Name}? Read(ref System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options)
-            {{
-                var node = System.Text.Json.Nodes.JsonNode.Parse(ref reader);
-                foreach (var prop in typeof({member.Name}).GetProperties())
-                {{
-                    var value = node?[prop.Name];
-                    if (value?.GetValueKind() == System.Text.Json.JsonValueKind.True)
-                    {{
-                        var type = typeof({member.Name}).GetNestedType(prop.Name[2..]);
-                        if (type is not null)
-                        {{
-                            return System.Text.Json.JsonSerializer.Deserialize(node, type) as {member.Name};
-                        }}
-                    }}
-                }}
-
-                return null;
-            }}
-
-            public override void Write(System.Text.Json.Utf8JsonWriter writer, {member.Name} value, System.Text.Json.JsonSerializerOptions options)
-            {{
-                writer.WriteStartObject();
-
-                foreach (var prop in value.GetType().GetProperties())
-                {{
-                    string propertyName = prop.Name;
-
-                    var val = value.GetType().GetProperty(propertyName)?.GetValue(value);
-                    if (val is not null)
-                    {{
-                        writer.WritePropertyName(options.PropertyNamingPolicy?.ConvertName(propertyName) ?? propertyName);
-                        System.Text.Json.JsonSerializer.Serialize(writer, val, options);
-                    }}
-                    else
-                    {{
-                        writer.WriteNull(propertyName);
-                    }}
-                }}
-
-                writer.WriteEndObject();
-            }}
-        }}";
     }
 }
